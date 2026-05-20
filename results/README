@@ -69,10 +69,10 @@ DEEPSEEK
 
 CLAUDE
   ClaudeCode
-    [ ] Binary
-    [ ] Blockchain
-    [ ] Crypto
-    [ ] Forensics
-    [ ] General
-    [ ] Reversing
-    [ ] Web
+    [✅] Binary
+    [✅] Blockchain
+    [✅] Crypto
+    [✅] Forensics
+    [✅] General
+    [✅] Reversing
+    [✅] Web

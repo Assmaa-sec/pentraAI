@@ -2906,7 +2906,7 @@ fileupload_framework = FileUploadTestingFramework()
 class CTFChallenge:
     """CTF challenge information"""
     name: str
-    category: str  # web, crypto, pwn, forensics, rev, misc, osint
+    category: str  # web, crypto, pwn, forensics, rev, general_skills, blockchain
     description: str
     points: int = 0
     difficulty: str = "unknown"  # easy, medium, hard, insane
@@ -2954,19 +2954,19 @@ class CTFWorkflowManager:
                 "packers": ["upx", "peid", "detect-it-easy"],
                 "analysis": ["strings", "ltrace", "strace", "objdump"]
             },
-            "misc": {
-                "encoding": ["base64", "hex", "url-decode", "rot13"],
-                "compression": ["zip", "tar", "gzip", "7zip"],
-                "qr_codes": ["qr-decoder", "zbar"],
-                "audio_analysis": ["audacity", "sonic-visualizer"],
-                "esoteric": ["brainfuck", "whitespace", "piet"]
+            "general_skills": {
+                "encoding": ["base64", "hex", "rot13", "cyberchef"],
+                "command_line": ["file", "strings", "xxd", "grep"],
+                "scripting": ["python3", "bash"],
+                "networking": ["netcat", "curl", "wget"],
+                "archives": ["unzip", "tar", "7zip"]
             },
-            "osint": {
-                "search_engines": ["google-dorking", "shodan", "censys"],
-                "social_media": ["sherlock", "social-analyzer"],
-                "image_analysis": ["reverse-image-search", "exif-analysis"],
-                "domain_analysis": ["whois", "dns-analysis", "certificate-transparency"],
-                "geolocation": ["geoint", "osm-analysis", "satellite-imagery"]
+            "blockchain": {
+                "contract_analysis": ["slither", "mythril", "manticore"],
+                "decompilers": ["dedaub", "panoramix", "ethervm"],
+                "interaction": ["web3py", "cast", "foundry"],
+                "transaction_analysis": ["etherscan-api", "tenderly"],
+                "fuzzing": ["echidna", "foundry-fuzz"]
             }
         }
 
@@ -3011,6 +3011,22 @@ class CTFWorkflowManager:
                 {"strategy": "unpacking", "description": "Unpack packed/obfuscated binaries"},
                 {"strategy": "algorithm_recovery", "description": "Reverse engineer algorithms"},
                 {"strategy": "key_recovery", "description": "Extract encryption keys from binaries"}
+            ],
+            "general_skills": [
+                {"strategy": "command_line_tools", "description": "Use basic Linux command-line tools (grep, strings, file, xxd)"},
+                {"strategy": "encoding_decoding", "description": "Try common encoding schemes: base64, hex, rot13, binary"},
+                {"strategy": "scripting", "description": "Write a short Python or Bash script to automate solution"},
+                {"strategy": "file_analysis", "description": "Inspect file type, structure, and contents"},
+                {"strategy": "flag_search", "description": "Search for picoCTF{ pattern directly in files or output"},
+                {"strategy": "networking", "description": "Use netcat or curl to interact with remote service"}
+            ],
+            "blockchain": [
+                {"strategy": "contract_source_review", "description": "Read and understand the Solidity smart contract source code"},
+                {"strategy": "vulnerability_analysis", "description": "Identify common contract vulnerabilities: reentrancy, integer overflow, access control"},
+                {"strategy": "transaction_analysis", "description": "Analyse on-chain transactions and storage slots"},
+                {"strategy": "abi_interaction", "description": "Interact with contract functions via web3.py or cast"},
+                {"strategy": "storage_inspection", "description": "Read raw contract storage slots to find hidden values"},
+                {"strategy": "decompilation", "description": "Decompile bytecode when source is unavailable"}
             ]
         }
 
@@ -3060,8 +3076,8 @@ class CTFWorkflowManager:
             "pwn": 1.5,
             "forensics": 1.2,
             "rev": 1.4,
-            "misc": 0.8,
-            "osint": 0.9
+            "general_skills": 0.7,
+            "blockchain": 1.6
         }
 
         base_time = base_times[challenge.difficulty]["avg"]
@@ -3144,6 +3160,24 @@ class CTFWorkflowManager:
             if any(keyword in description_lower for keyword in ["packed", "upx"]):
                 selected_tools.extend(["upx", "peid"])
 
+        elif challenge.category == "general_skills":
+            selected_tools.extend(["file", "strings", "xxd"])
+            if any(keyword in description_lower for keyword in ["base64", "encode", "decode"]):
+                selected_tools.extend(["base64", "cyberchef"])
+            if any(keyword in description_lower for keyword in ["connect", "service", "port", "netcat"]):
+                selected_tools.append("netcat")
+            if any(keyword in description_lower for keyword in ["script", "python", "automate"]):
+                selected_tools.append("python3")
+
+        elif challenge.category == "blockchain":
+            selected_tools.extend(["slither", "cast", "web3py"])
+            if any(keyword in description_lower for keyword in ["reentrancy", "overflow", "vulnerability"]):
+                selected_tools.extend(["mythril", "manticore"])
+            if any(keyword in description_lower for keyword in ["storage", "slot", "hidden"]):
+                selected_tools.append("cast")
+            if any(keyword in description_lower for keyword in ["bytecode", "decompile", "no source"]):
+                selected_tools.extend(["dedaub", "panoramix"])
+
         # Remove duplicates while preserving order
         return list(dict.fromkeys(selected_tools))
 
@@ -3189,6 +3223,22 @@ class CTFWorkflowManager:
                 {"step": 4, "action": "key_extraction", "description": "Extract keys or important values"},
                 {"step": 5, "action": "solution_implementation", "description": "Implement solution based on analysis"},
                 {"step": 6, "action": "flag_generation", "description": "Generate or extract the flag"}
+            ],
+            "general_skills": [
+                {"step": 1, "action": "file_inspection", "description": "Inspect file type and basic contents"},
+                {"step": 2, "action": "encoding_detection", "description": "Identify any encoding or obfuscation"},
+                {"step": 3, "action": "decoding", "description": "Decode data using detected scheme"},
+                {"step": 4, "action": "service_interaction", "description": "Connect to remote service if applicable"},
+                {"step": 5, "action": "scripting", "description": "Write script to automate solution if needed"},
+                {"step": 6, "action": "flag_extraction", "description": "Extract picoCTF{} flag"}
+            ],
+            "blockchain": [
+                {"step": 1, "action": "contract_review", "description": "Read smart contract source or decompile bytecode"},
+                {"step": 2, "action": "vulnerability_identification", "description": "Identify exploitable contract vulnerabilities"},
+                {"step": 3, "action": "storage_analysis", "description": "Inspect on-chain storage slots for hidden data"},
+                {"step": 4, "action": "exploit_scripting", "description": "Write web3.py or Foundry script to exploit"},
+                {"step": 5, "action": "transaction_execution", "description": "Execute exploit transaction on-chain"},
+                {"step": 6, "action": "flag_extraction", "description": "Read flag from contract event or storage"}
             ]
         }
 
@@ -3288,19 +3338,19 @@ class CTFWorkflowManager:
                 {"strategy": "algorithm_identification", "description": "Focus on identifying key algorithms"},
                 {"strategy": "patch_analysis", "description": "Analyze patches or modifications to standard code"}
             ],
-            "misc": [
-                {"strategy": "alternative_interpretations", "description": "Try alternative interpretations of the challenge"},
-                {"strategy": "encoding_combinations", "description": "Try combinations of different encodings"},
-                {"strategy": "esoteric_approaches", "description": "Consider esoteric or unusual solution approaches"},
-                {"strategy": "metadata_focus", "description": "Focus heavily on metadata and hidden information"},
-                {"strategy": "collaborative_solving", "description": "Use collaborative problem-solving techniques"}
+            "general_skills": [
+                {"strategy": "encoding_combinations", "description": "Try chained encodings: base64 → hex → rot13 etc."},
+                {"strategy": "cyberchef_magic", "description": "Use CyberChef Magic operation to auto-detect encoding"},
+                {"strategy": "grep_flag_pattern", "description": "grep -r 'picoCTF{' across all files and directories"},
+                {"strategy": "service_reconnect", "description": "Re-read challenge prompt and reconnect to service carefully"},
+                {"strategy": "binary_strings", "description": "Run strings with low minimum length (-n 4) to catch short flags"}
             ],
-            "osint": [
-                {"strategy": "alternative_sources", "description": "Try alternative information sources"},
-                {"strategy": "historical_data", "description": "Look for historical or archived information"},
-                {"strategy": "social_engineering", "description": "Use social engineering techniques (ethically)"},
-                {"strategy": "cross_reference", "description": "Cross-reference information across multiple platforms"},
-                {"strategy": "deep_web_search", "description": "Search in deep web and specialized databases"}
+            "blockchain": [
+                {"strategy": "static_analysis_tools", "description": "Run Slither or Mythril for automated vulnerability detection"},
+                {"strategy": "brute_force_storage", "description": "Iterate all storage slots 0–50 with cast storage"},
+                {"strategy": "event_log_scraping", "description": "Scrape past contract events for flag data"},
+                {"strategy": "bytecode_decompilation", "description": "Decompile bytecode with Dedaub or Panoramix when source unavailable"},
+                {"strategy": "mainnet_fork", "description": "Fork the testnet with Anvil to test exploit locally before submitting"}
             ]
         }
         return fallback_strategies.get(category, [])
@@ -3388,23 +3438,23 @@ class CTFWorkflowManager:
                 {"step": 7, "action": "solution_implementation", "description": "Implement solution based on analysis", "parallel": False, "tools": ["python", "custom"], "estimated_time": 1200},
                 {"step": 8, "action": "flag_generation", "description": "Generate or extract the flag", "parallel": False, "tools": ["manual"], "estimated_time": 300}
             ],
-            "misc": [
-                {"step": 1, "action": "challenge_analysis", "description": "Analyze challenge type and requirements", "parallel": False, "tools": ["manual"], "estimated_time": 300},
-                {"step": 2, "action": "encoding_detection", "description": "Detect encoding or obfuscation methods", "parallel": True, "tools": ["base64", "hex", "rot13"], "estimated_time": 600},
-                {"step": 3, "action": "format_identification", "description": "Identify file formats or data structures", "parallel": False, "tools": ["file", "binwalk"], "estimated_time": 300},
-                {"step": 4, "action": "specialized_analysis", "description": "Apply specialized analysis techniques", "parallel": True, "tools": ["qr-decoder", "audio-analysis"], "estimated_time": 900},
-                {"step": 5, "action": "pattern_recognition", "description": "Identify patterns and relationships", "parallel": False, "tools": ["manual"], "estimated_time": 600},
-                {"step": 6, "action": "solution_implementation", "description": "Implement solution approach", "parallel": False, "tools": ["python", "custom"], "estimated_time": 900},
-                {"step": 7, "action": "validation", "description": "Validate solution and extract flag", "parallel": False, "tools": ["manual"], "estimated_time": 300}
+            "general_skills": [
+                {"step": 1, "action": "file_inspection", "description": "Check file type, size and basic properties", "parallel": True, "tools": ["file", "strings", "xxd"], "estimated_time": 180},
+                {"step": 2, "action": "encoding_detection", "description": "Detect and try common encodings", "parallel": True, "tools": ["base64", "hex", "rot13", "cyberchef"], "estimated_time": 300},
+                {"step": 3, "action": "flag_grep", "description": "Search for picoCTF{ pattern across all data", "parallel": False, "tools": ["grep"], "estimated_time": 120},
+                {"step": 4, "action": "service_interaction", "description": "Connect to remote service and read prompts", "parallel": False, "tools": ["netcat", "curl"], "estimated_time": 300},
+                {"step": 5, "action": "scripting", "description": "Write Python/Bash script if automation needed", "parallel": False, "tools": ["python3"], "estimated_time": 600},
+                {"step": 6, "action": "flag_extraction", "description": "Extract and submit picoCTF{} flag", "parallel": False, "tools": ["manual"], "estimated_time": 120}
             ],
-            "osint": [
-                {"step": 1, "action": "target_identification", "description": "Identify and validate targets", "parallel": False, "tools": ["manual"], "estimated_time": 300},
-                {"step": 2, "action": "automated_reconnaissance", "description": "Automated OSINT gathering", "parallel": True, "tools": ["sherlock", "theHarvester", "sublist3r"], "estimated_time": 1200},
-                {"step": 3, "action": "social_media_analysis", "description": "Social media intelligence gathering", "parallel": True, "tools": ["sherlock", "social-analyzer"], "estimated_time": 900},
-                {"step": 4, "action": "domain_analysis", "description": "Domain and DNS intelligence", "parallel": True, "tools": ["whois", "dig", "amass"], "estimated_time": 600},
-                {"step": 5, "action": "search_engine_intelligence", "description": "Search engine and database queries", "parallel": True, "tools": ["shodan", "censys"], "estimated_time": 900},
-                {"step": 6, "action": "correlation_analysis", "description": "Correlate information across sources", "parallel": False, "tools": ["manual"], "estimated_time": 1200},
-                {"step": 7, "action": "verification", "description": "Verify findings and extract flag", "parallel": False, "tools": ["manual"], "estimated_time": 600}
+            "blockchain": [
+                {"step": 1, "action": "contract_review", "description": "Read Solidity source or decompile bytecode", "parallel": False, "tools": ["dedaub", "panoramix"], "estimated_time": 600},
+                {"step": 2, "action": "static_analysis", "description": "Run automated vulnerability scanners", "parallel": True, "tools": ["slither", "mythril"], "estimated_time": 900},
+                {"step": 3, "action": "storage_inspection", "description": "Read all contract storage slots", "parallel": False, "tools": ["cast"], "estimated_time": 300},
+                {"step": 4, "action": "transaction_history", "description": "Analyse past transactions and events", "parallel": False, "tools": ["etherscan-api", "tenderly"], "estimated_time": 600},
+                {"step": 5, "action": "exploit_development", "description": "Write exploit script using web3.py or Foundry", "parallel": False, "tools": ["web3py", "foundry"], "estimated_time": 1800},
+                {"step": 6, "action": "local_testing", "description": "Test exploit on Anvil mainnet fork", "parallel": False, "tools": ["foundry"], "estimated_time": 600},
+                {"step": 7, "action": "on_chain_exploitation", "description": "Execute exploit on target network", "parallel": False, "tools": ["cast", "web3py"], "estimated_time": 300},
+                {"step": 8, "action": "flag_extraction", "description": "Read flag from contract storage or emitted event", "parallel": False, "tools": ["cast"], "estimated_time": 180}
             ]
         }
 
@@ -3446,14 +3496,14 @@ class CTFWorkflowManager:
                 {"task_group": "disassembly", "tasks": ["ghidra", "radare2"], "max_concurrent": 2},
                 {"task_group": "packer_detection", "tasks": ["upx", "peid", "detect-it-easy"], "max_concurrent": 3}
             ],
-            "osint": [
-                {"task_group": "username_search", "tasks": ["sherlock", "social-analyzer"], "max_concurrent": 2},
-                {"task_group": "domain_recon", "tasks": ["sublist3r", "amass", "dig"], "max_concurrent": 3},
-                {"task_group": "search_engines", "tasks": ["shodan", "censys"], "max_concurrent": 2}
-            ],
-            "misc": [
+            "general_skills": [
                 {"task_group": "encoding_detection", "tasks": ["base64", "hex", "rot13"], "max_concurrent": 3},
-                {"task_group": "format_analysis", "tasks": ["file", "binwalk"], "max_concurrent": 2}
+                {"task_group": "file_inspection", "tasks": ["file", "strings", "xxd"], "max_concurrent": 3}
+            ],
+            "blockchain": [
+                {"task_group": "static_analysis", "tasks": ["slither", "mythril"], "max_concurrent": 2},
+                {"task_group": "decompilation", "tasks": ["dedaub", "panoramix"], "max_concurrent": 2},
+                {"task_group": "storage_scan", "tasks": ["cast"], "max_concurrent": 1}
             ]
         }
 
@@ -3477,8 +3527,8 @@ class CTFWorkflowManager:
             "pwn": {"cpu_cores": 4, "memory_mb": 4096, "special_tools": ["gdb", "pwntools"]},
             "forensics": {"cpu_cores": 2, "memory_mb": 8192, "disk_space_mb": 4096},
             "rev": {"cpu_cores": 4, "memory_mb": 8192, "special_tools": ["ghidra", "ida"]},
-            "osint": {"cpu_cores": 2, "memory_mb": 2048, "network_bandwidth": "high"},
-            "misc": {"cpu_cores": 2, "memory_mb": 2048}
+            "general_skills": {"cpu_cores": 1, "memory_mb": 1024},
+            "blockchain": {"cpu_cores": 4, "memory_mb": 4096, "network_bandwidth": "high", "special_tools": ["foundry", "web3py"]}
         }
 
         if challenge.category in category_adjustments:
@@ -3539,18 +3589,18 @@ class CTFWorkflowManager:
                 {"type": "control_flow", "description": "Control flow analysis"},
                 {"type": "solution_script", "description": "Solution implementation script"}
             ],
-            "osint": [
-                {"type": "intelligence_report", "description": "Compiled intelligence report"},
-                {"type": "social_profiles", "description": "Discovered social media profiles"},
-                {"type": "domain_data", "description": "Domain registration and DNS data"},
-                {"type": "correlation_matrix", "description": "Information correlation analysis"},
-                {"type": "verification_data", "description": "Verification of findings"}
+            "general_skills": [
+                {"type": "decoded_data", "description": "Decoded or decrypted output"},
+                {"type": "script_output", "description": "Output from solution script"},
+                {"type": "service_transcript", "description": "Transcript of remote service interaction"},
+                {"type": "intermediate_results", "description": "Intermediate decoding steps"}
             ],
-            "misc": [
-                {"type": "decoded_data", "description": "Decoded or decrypted data"},
-                {"type": "pattern_analysis", "description": "Pattern recognition results"},
-                {"type": "solution_explanation", "description": "Explanation of solution approach"},
-                {"type": "intermediate_results", "description": "Intermediate calculation results"}
+            "blockchain": [
+                {"type": "contract_analysis", "description": "Static analysis vulnerability report"},
+                {"type": "storage_dump", "description": "Raw contract storage slot values"},
+                {"type": "exploit_script", "description": "Working web3.py or Foundry exploit script"},
+                {"type": "transaction_receipt", "description": "On-chain exploit transaction receipt"},
+                {"type": "event_logs", "description": "Emitted contract events containing flag"}
             ]
         }
 
@@ -3592,17 +3642,17 @@ class CTFWorkflowManager:
                 {"step": "solution_testing", "description": "Test solution against known inputs"},
                 {"step": "flag_generation", "description": "Generate correct flag using solution"}
             ],
-            "osint": [
-                {"step": "source_verification", "description": "Verify information sources are reliable"},
-                {"step": "cross_reference", "description": "Cross-reference findings across sources"},
-                {"step": "accuracy_check", "description": "Check accuracy of gathered intelligence"},
-                {"step": "flag_confirmation", "description": "Confirm flag from verified information"}
+            "general_skills": [
+                {"step": "output_validation", "description": "Verify decoded output is readable/meaningful"},
+                {"step": "flag_format_check", "description": "Confirm flag matches picoCTF{} format"},
+                {"step": "edge_case_testing", "description": "Re-run with alternate encodings if flag not found"},
+                {"step": "flag_extraction", "description": "Extract and submit picoCTF{} flag"}
             ],
-            "misc": [
-                {"step": "solution_verification", "description": "Verify solution approach is correct"},
-                {"step": "output_validation", "description": "Validate output format and content"},
-                {"step": "edge_case_testing", "description": "Test solution with edge cases"},
-                {"step": "flag_extraction", "description": "Extract and validate final flag"}
+            "blockchain": [
+                {"step": "local_exploit_test", "description": "Confirm exploit works on Anvil fork before going on-chain"},
+                {"step": "transaction_verification", "description": "Verify exploit transaction was mined successfully"},
+                {"step": "storage_read", "description": "Read contract storage or events to confirm flag is accessible"},
+                {"step": "flag_format_check", "description": "Confirm flag matches picoCTF{} format"}
             ]
         }
 
@@ -3815,9 +3865,12 @@ class CTFToolManager:
             "osint_social": ["sherlock", "social-analyzer", "theHarvester"],
             "osint_domain": ["whois", "dig", "sublist3r", "amass"],
             "osint_search": ["shodan", "censys", "recon-ng"],
-            "misc_encoding": ["base64", "base32", "hex", "rot13"],
-            "misc_compression": ["zip", "7zip", "rar", "tar"],
-            "misc_esoteric": ["brainfuck", "whitespace", "piet", "malbolge"]
+            "general_skills_encoding": ["base64", "base32", "hex", "rot13", "cyberchef"],
+            "general_skills_cli": ["file", "strings", "xxd", "grep"],
+            "general_skills_networking": ["netcat", "curl", "wget"],
+            "blockchain_analysis": ["slither", "mythril", "manticore"],
+            "blockchain_interaction": ["cast", "web3py", "foundry"],
+            "blockchain_decompile": ["dedaub", "panoramix", "ethervm"]
         }
 
     def get_tool_command(self, tool: str, target: str, additional_args: str = "") -> str:
@@ -3955,17 +4008,29 @@ class CTFToolManager:
             if any(keyword in description_lower for keyword in ["whois", "registration", "owner"]):
                 suggested_tools.append("whois")
 
-        elif category == "misc":
-            if any(keyword in description_lower for keyword in ["qr", "barcode", "code"]):
-                suggested_tools.append("qr-decoder")
+        elif category == "general_skills":
+            suggested_tools.extend(self.tool_categories["general_skills_cli"][:2])
+            if any(keyword in description_lower for keyword in ["base64", "encode", "decode", "encoding"]):
+                suggested_tools.extend(["base64", "cyberchef"])
+            if any(keyword in description_lower for keyword in ["hex", "binary", "bytes"]):
+                suggested_tools.append("hex")
+            if any(keyword in description_lower for keyword in ["connect", "service", "port", "netcat", "nc"]):
+                suggested_tools.append("netcat")
+            if any(keyword in description_lower for keyword in ["script", "python", "automate"]):
+                suggested_tools.append("python3")
             if any(keyword in description_lower for keyword in ["zip", "archive", "compressed"]):
-                suggested_tools.extend(["zip", "7zip", "rar"])
-            if any(keyword in description_lower for keyword in ["brainfuck", "bf", "esoteric"]):
-                suggested_tools.append("brainfuck")
-            if any(keyword in description_lower for keyword in ["whitespace", "ws"]):
-                suggested_tools.append("whitespace")
-            if any(keyword in description_lower for keyword in ["piet", "image", "program"]):
-                suggested_tools.append("piet")
+                suggested_tools.extend(["unzip", "7zip"])
+
+        elif category == "blockchain":
+            suggested_tools.extend(["slither", "cast"])
+            if any(keyword in description_lower for keyword in ["reentrancy", "overflow", "vulnerability", "exploit"]):
+                suggested_tools.extend(["mythril", "manticore"])
+            if any(keyword in description_lower for keyword in ["storage", "slot", "hidden", "private"]):
+                suggested_tools.append("cast")
+            if any(keyword in description_lower for keyword in ["bytecode", "decompile", "no source", "binary"]):
+                suggested_tools.extend(["dedaub", "panoramix"])
+            if any(keyword in description_lower for keyword in ["web3", "interact", "call", "transaction"]):
+                suggested_tools.extend(["web3py", "foundry"])
 
         # Remove duplicates while preserving order
         return list(dict.fromkeys(suggested_tools))
@@ -4105,6 +4170,7 @@ class CTFChallengeAutomator:
     def _extract_flag_candidates(self, output: str) -> List[str]:
         """Extract potential flags from tool output"""
         flag_patterns = [
+            r'picoCTF\{[^}]+\}',
             r'flag\{[^}]+\}',
             r'FLAG\{[^}]+\}',
             r'ctf\{[^}]+\}',
@@ -4125,6 +4191,7 @@ class CTFChallengeAutomator:
     def _validate_flag_format(self, flag: str) -> bool:
         """Validate if a string matches common flag formats"""
         common_formats = [
+            r'^picoCTF\{.+\}$',
             r'^flag\{.+\}$',
             r'^FLAG\{.+\}$',
             r'^ctf\{.+\}$',
@@ -4188,6 +4255,18 @@ class CTFChallengeAutomator:
                 {"action": "key_extraction", "description": "Extract hardcoded keys or important values"},
                 {"action": "dynamic_analysis", "description": "Use dynamic analysis to understand runtime behavior"}
             ])
+        elif challenge.category == "general_skills":
+            guidance.extend([
+                {"action": "try_all_encodings", "description": "Systematically try every encoding: base64, hex, rot13, binary, URL"},
+                {"action": "reread_prompt", "description": "Re-read challenge prompt carefully for hidden hints"},
+                {"action": "service_reconnect", "description": "Reconnect to remote service and follow all instructions exactly"}
+            ])
+        elif challenge.category == "blockchain":
+            guidance.extend([
+                {"action": "manual_storage_read", "description": "Manually iterate storage slots 0–100 with cast storage <addr> <slot>"},
+                {"action": "event_log_review", "description": "Pull full event log history and search for flag patterns"},
+                {"action": "foundry_fork", "description": "Use Anvil to fork the network and test exploit interactively"}
+            ])
 
         return guidance
 
@@ -4217,11 +4296,11 @@ class CTFTeamCoordinator:
             skill_matrix[member] = {
                 "web": "web" in skills or "webapp" in skills,
                 "crypto": "crypto" in skills or "cryptography" in skills,
-                "pwn": "pwn" in skills or "binary" in skills,
+                "pwn": "pwn" in skills or "binary" in skills or "binary exploitation" in skills,
                 "forensics": "forensics" in skills or "investigation" in skills,
-                "rev": "reverse" in skills or "reversing" in skills,
-                "osint": "osint" in skills or "intelligence" in skills,
-                "misc": True  # Everyone can handle misc
+                "rev": "reverse" in skills or "reversing" in skills or "rev" in skills,
+                "general_skills": True,  # Everyone can handle general skills
+                "blockchain": "blockchain" in skills or "web3" in skills or "solidity" in skills
             }
 
         # Score challenges for each team member
