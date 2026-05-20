@@ -1,7 +1,8 @@
 # HexStrike-AI CTF Evaluation — Prompt Folder
 
 ## What this is
-264 exercises total: 88 challenges × 3 experiment variants × 1 Claude config + 88 × 3 × 3 DeepSeek configs.
+88 challenges per client; 3 experiments per challenge.
+88 * 3 * 4 = 1056 test results. 
 
 ## Configurations
 | LLM      | Client     |
@@ -9,7 +10,7 @@
 | Claude   | ClaudeCode |
 | DeepSeek | 5ire       |
 | DeepSeek | RooCode    |
-| DeepSeek | Trae       |
+| Doubao   | OpenClaw   |
 
 ## Folder structure
 LLM/
@@ -66,13 +67,23 @@ DEEPSEEK
     [ ] General
     [ ] Reversing
     [ ] Web
+    
+DOUBAO
+  OpenClaw
+    [ ] Binary
+    [ ] Blockchain
+    [ ] Crypto
+    [ ] Forensics
+    [ ] General
+    [ ] Reversing
+    [ ] Web
 
 CLAUDE
   ClaudeCode
-    [✅] Binary
-    [✅] Blockchain
-    [✅] Crypto
-    [✅] Forensics
-    [✅] General
-    [✅] Reversing
-    [✅] Web
+    [X] Binary
+    [X] Blockchain
+    [X] Crypto
+    [X] Forensics
+    [X] General
+    [X] Reversing
+    [X] Web
