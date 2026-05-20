@@ -56,22 +56,13 @@ DEEPSEEK
     [X] Forensics
     [X] General
     [X] Reversing
-    [ ] Web
+    [X] Web
 
   5ire
     [ ] Binary
     [ ] Blockchain
     [ ] Crypto
-    [ ] Forensics
-    [ ] General
-    [ ] Reversing
-    [ ] Web
-
-  Trae
-    [ ] Binary
-    [ ] Blockchain
-    [ ] Crypto
-    [ ] Forensics
+    [X] Forensics
     [ ] General
     [ ] Reversing
     [ ] Web
