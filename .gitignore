@@ -1,6 +1,8 @@
 tool_logger.log
 hexstrike.log
 core.*
-
+.mcp.json
+im_scared/*
 .roo
+.claude/*
 hexstrike_config.json

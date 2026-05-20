@@ -50,13 +50,13 @@ The exercise block at the bottom of each file contains the challenge name, descr
 ## Test Progress
 DEEPSEEK
   RooCode
-    [X] Binary
-    [X] Blockchain
-    [X] Crypto
-    [X] Forensics
-    [X] General
-    [X] Reversing
-    [ ] Web
+    [✅] Binary
+    [✅] Blockchain
+    [✅] Crypto
+    [✅] Forensics
+    [✅] General
+    [✅] Reversing
+    [✅] Web
 
   5ire
     [ ] Binary
@@ -67,7 +67,7 @@ DEEPSEEK
     [ ] Reversing
     [ ] Web
 
-  Trae
+  Cursor
     [ ] Binary
     [ ] Blockchain
     [ ] Crypto
