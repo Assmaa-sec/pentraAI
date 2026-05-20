@@ -24,7 +24,71 @@ The image is attached to the prompt.
 
 Results:
 [Experiment 1]
+2026-05-23 10:11:33,827 | ── SESSION 6d1f9c30 ──
+── START SETUP ──
+TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
+TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'MSB', 'ctf_difficulty': 'Medium', 'ctf_type': 'Forensics'}
+── END SETUP ──
+── CONTEXT ── | model=deepseek-chat | client=5ire
+── CONTEXT ── | ctf_name=MSB | ctf_difficulty=Medium | ctf_type=Forensics
+── TIMER_START ──
+NATIVE TOOL | tool=list_files | params=path=results/Deepseek/5ire/Forensics/Medium/MSB | recursive=False
+NATIVE TOOL | tool=execute_command | params=command=file results/Deepseek/5ire/Forensics/Medium/MSB/Nin…
+HEXSTRIKE TOOL | tool=exiftool_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Medium… | output_format=json | tags=
+HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Medium… | min_len=6 | additional_args=
+NATIVE TOOL | tool=execute_command | params=command=zsteg results/Deepseek/5ire/Forensics/Medium/MSB/N…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "from PIL import Image; img=Image.open(…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "from PIL import Image; img=Image.open(…
+HEXSTRIKE TOOL | tool=binwalk_analyze | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Medium… | extract=False | additional_args=
+── TIMER_STOP ──
+2026-05-23 10:21:09,174 | ── END SESSION 6d1f9c30 ── | total_time_spent=576.2s
+── TEST RESULT: [FAILED] ──
 
 [Experiment 2]
+2026-05-23 10:25:44,019 | ── SESSION 08a4e27b ──
+── START SETUP ──
+TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
+TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'MSB', 'ctf_difficulty': 'Medium', 'ctf_type': 'Forensics'}
+── END SETUP ──
+── CONTEXT ── | model=deepseek-chat | client=5ire
+── CONTEXT ── | ctf_name=MSB | ctf_difficulty=Medium | ctf_type=Forensics
+── TIMER_START ──
+HEXSTRIKE TOOL | tool=exiftool_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Medium… | output_format= | tags=
+HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Medium… | min_len=6 | additional_args=
+HEXSTRIKE TOOL | tool=execute_command | params=command=zsteg /home/kali/hexstrike-ai/results/Deepseek/5… | use_cache=False
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "from PIL import Image; import numpy as …
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps | env_name=default
+HEXSTRIKE TOOL | tool=steghide_analysis | params=action=info | cover_file=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Medium… | embed_file=
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
+── TIMER_STOP ──
+2026-05-23 10:38:57,192 | ── END SESSION 08a4e27b ── | total_time_spent=793.1s
+── TEST RESULT: [FAILED] ──
 
 [Experiment 3]
+2026-05-23 10:42:30,661 | ── SESSION 3c5f8b19 ──
+── START SETUP ──
+TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
+TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'MSB', 'ctf_difficulty': 'Medium', 'ctf_type': 'Forensics'}
+── END SETUP ──
+── CONTEXT ── | model=deepseek-chat | client=5ire
+── CONTEXT ── | ctf_name=MSB | ctf_difficulty=Medium | ctf_type=Forensics
+── TIMER_START ──
+HEXSTRIKE TOOL | tool=exiftool_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Medium… | output_format=json | tags=
+HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Medium… | min_len=6 | additional_args=
+HEXSTRIKE TOOL | tool=execute_command | params=command=zsteg /home/kali/hexstrike-ai/results/Deepseek/5… | use_cache=False
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps | env_name=default
+HEXSTRIKE TOOL | tool=steghide_analysis | params=action=info | cover_file=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Medium… | embed_file=
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps | env_name=default
+HEXSTRIKE TOOL | tool=binwalk_analyze | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Medium… | extract=True | additional_args=
+HEXSTRIKE TOOL | tool=execute_command | params=command=ls -la /tmp/_Ninja-and-Prince-Genji.extracted/ … | use_cache=False
+HEXSTRIKE TOOL | tool=execute_command | params=command=strings /home/kali/hexstrike-ai/results/Deepseek… | use_cache=False
+── TIMER_STOP ──
+2026-05-23 11:04:18,383 | ── END SESSION 3c5f8b19 ── | total_time_spent=1308.6s
+── TEST RESULT: [FAILED] ──
