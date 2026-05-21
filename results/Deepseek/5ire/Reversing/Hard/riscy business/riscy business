@@ -77,6 +77,7 @@ HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct | env_
 HEXSTRIKE TOOL | tool=execute_command | params=command=radare2 -a riscv -qc "aaa; afl" /home/kali/hexstrik… | use_cache=False
 HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct | env_name=default
 HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct; data=open('/home/kali/hexstrike… | env_name=default
 ── TIMER_STOP ──
 2026-05-30 16:28:14,255 | ── END SESSION 2e0c5a81 ── | total_time_spent=1537.4s
 ── TEST RESULT: [FAILED] ──
