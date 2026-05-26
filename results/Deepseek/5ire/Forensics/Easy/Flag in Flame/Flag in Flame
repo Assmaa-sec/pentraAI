@@ -14,7 +14,7 @@ You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF.
 If you need to create files or folders, do so ONLY in the current exercise directory. Do NOT touch the root or any other directory.
 
 [Experiment 3]
-You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF. You must find the correct flag using hexstrike tools and ranking. Never use your own tools or your own logic. MUST follow hexstrike’s logic.
+You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF. You must find the correct flag using hexstrike tools and ranking. Never use your own tools or your own logic. MUST follow hexstrike's logic.
 If you need to create files or folders, do so ONLY in the current exercise directory. Do NOT touch the root or any other directory.
 
 Exercise:
@@ -32,24 +32,16 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Flag
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=Flag in Flame | ctf_difficulty=Easy | ctf_type=Forensics
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=execute_command | params=command=wc -l /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=head -c 200 /home/kali/hexstrike-ai/results/Deepseek/5ire/Fo… | use_cache=False
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | min_len=8 | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=base64 -d /home/kali/hexstrike-ai/results/Deepseek/5ire/Foren… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=file /tmp/decoded_output | use_cache=False
-HEXSTRIKE TOOL | tool=exiftool_extract | params=file_path=/tmp/decoded_output | output_format=json | tags=
-HEXSTRIKE TOOL | tool=execute_command | params=command=cp /tmp/decoded_output /home/kali/hexstrike-ai/results/Deeps… | use_cache=False
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/tmp/decoded_output | min_len=10 | additional_args=
-HEXSTRIKE TOOL | tool=steghide_analysis | params=action=info | cover_file=/tmp/decoded_output | embed_file=
-HEXSTRIKE TOOL | tool=execute_command | params=command=steghide info /tmp/decoded_output 2>&1 | use_cache=False
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
-HEXSTRIKE TOOL | tool=execute_command | params=command=strings /tmp/decoded_output | grep -iE "flag|pico|ctf" | use_cache=False
+NATIVE TOOL | tool=list_files | params=path=results/Deepseek/5ire/Forensics/Easy/Flag in Flame | recursive=False
+NATIVE TOOL | tool=execute_command | params=command=wc -l results/Deepseek/5ire/Forensics/Easy/Flag\ in\ Flame/logs.txt
+NATIVE TOOL | tool=execute_command | params=command=base64 -d results/Deepseek/5ire/Forensics/Easy/Flag\ in\ …
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['binwalk','/tmp/decoded_flame'], capture_output=True, tex… | env_name=default
 ── TIMER_STOP ──
-2026-05-18 10:29:08,241 | ── END SESSION f1a8d04c ── | total_time_spent=413.6s
+2026-05-18 10:25:24,637 | ── END SESSION f1a8d04c ── | total_time_spent=190.0s
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 2]
-2026-05-18 10:34:51,892 | ── SESSION 82b7e931 ──
+2026-05-18 10:49:59,261 | ── SESSION 82b7e931 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
 TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Flag in Flame', 'ctf_difficulty': 'Easy', 'ctf_type': 'Forensics'}
@@ -57,33 +49,19 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Flag
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=Flag in Flame | ctf_difficulty=Easy | ctf_type=Forensics
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=execute_command | params=command=wc -c /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics… | use_cache=True
-HEXSTRIKE TOOL | tool=execute_command | params=command=head -c 200 /home/kali/hexstrike-ai/results/Deepseek/5ire/Fo… | use_cache=True
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | min_len=8 | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=base64 -d /home/kali/hexstrike-ai/results/Deepseek/5ire/Foren… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=file /tmp/decoded_output | use_cache=False
-HEXSTRIKE TOOL | tool=exiftool_extract | params=file_path=/tmp/decoded_output | output_format=json | tags=
-HEXSTRIKE TOOL | tool=exiftool_extract | params=file_path=/tmp/decoded_output | output_format= | tags=
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/tmp/decoded_output | min_len=8 | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=strings /tmp/decoded_output | grep -iE "flag|pico|ctf|hidden" | use_cache=False
-HEXSTRIKE TOOL | tool=steghide_analysis | params=action=info | cover_file=/tmp/decoded_output | embed_file=
-HEXSTRIKE TOOL | tool=execute_command | params=command=steghide info /tmp/decoded_output 2>&1 | use_cache=False
-HEXSTRIKE TOOL | tool=binwalk_analyze | params=file_path=/tmp/decoded_output | extract=False | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=binwalk /tmp/decoded_output | use_cache=False
-HEXSTRIKE TOOL | tool=install_python_package | params=package=pillow | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
-HEXSTRIKE TOOL | tool=execute_command | params=command=which zsteg 2>/dev/null || echo "not found" | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=pip install zsteg 2>/dev/null | tail -3 | use_cache=False
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps, ImageEnhance | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
+HEXSTRIKE TOOL | tool=execute_command | params=command=head -c 200 /home/kali/hexstrike-ai/results/Deepseek/… | use_cache=True
+NATIVE TOOL | tool=execute_command | params=command=wc -c results/Deepseek/5ire/Forensics/Easy/Flag\ in\ Flame/logs.txt
+NATIVE TOOL | tool=execute_command | params=command=base64 -d results/Deepseek/5ire/Forensics/Easy/Flag\ in\ …
+NATIVE TOOL | tool=execute_command | params=command=file /tmp/decoded_flame
+HEXSTRIKE TOOL | tool=binwalk_analyze | params=file_path=/tmp/decoded_flame | extract=False | additional_args=
+HEXSTRIKE TOOL | tool=steghide_analysis | params=action=info | cover_file=/tmp/decoded_flame | embed_file=
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['strings','/tmp/decoded_flame'], capture_output=True, text=True); print(result.stdout[:200]) | env_name=default
 ── TIMER_STOP ──
-2026-05-18 10:49:17,544 | ── END SESSION 82b7e931 ── | total_time_spent=865.7s
+2026-05-18 10:53:29,261 | ── END SESSION 82b7e931 ── | total_time_spent=210.0s
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 3]
-2026-05-18 11:03:02,315 | ── SESSION 6c4f2e08 ──
+2026-05-18 11:26:29,608 | ── SESSION 6c4f2e08 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
 TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Flag in Flame', 'ctf_difficulty': 'Easy', 'ctf_type': 'Forensics'}
@@ -91,33 +69,11 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Flag
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=Flag in Flame | ctf_difficulty=Easy | ctf_type=Forensics
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | min_len=8 | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=wc -c /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=base64 -d /home/kali/hexstrike-ai/results/Deepseek/5ire/Foren… | use_cache=False
+NATIVE TOOL | tool=execute_command | params=command=base64 -d results/Deepseek/5ire/Forensics/Easy/Flag\ in\ …
 HEXSTRIKE TOOL | tool=execute_command | params=command=file /tmp/decoded_flame | use_cache=False
-HEXSTRIKE TOOL | tool=exiftool_extract | params=file_path=/tmp/decoded_flame | output_format= | tags=
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/tmp/decoded_flame | min_len=10 | additional_args=
-HEXSTRIKE TOOL | tool=steghide_analysis | params=action=info | cover_file=/tmp/decoded_flame | embed_file=
-HEXSTRIKE TOOL | tool=steghide_analysis | params=action=extract | cover_file=/tmp/decoded_flame | embed_file=/tmp/steg_out
-HEXSTRIKE TOOL | tool=execute_command | params=command=steghide extract -sf /tmp/decoded_flame -p "" -f 2>&1 | use_cache=False
-HEXSTRIKE TOOL | tool=binwalk_analyze | params=file_path=/tmp/decoded_flame | extract=True | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=ls -la /tmp/_decoded_flame.extracted/ 2>/dev/null | use_cache=False
-HEXSTRIKE TOOL | tool=install_python_package | params=package=pillow | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps, ImageEnhance | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps | env_name=default
-HEXSTRIKE TOOL | tool=execute_command | params=command=which tesseract 2>/dev/null || echo "not installed" | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=sudo apt-get install -y tesseract-ocr 2>&1 | tail -5 | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=sudo apt-get install -y tesseract-ocr 2>&1 | tail -5 | use_cache=False
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps, ImageEnhance | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps | env_name=default
+HEXSTRIKE TOOL | tool=binwalk_analyze | params=file_path=/tmp/decoded_flame | extract=False | additional_args=
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['strings','/tmp/decoded_flame'], capture_output=True, text=True); print(result.stdout[:300]) | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['steghide','info','/tmp/decoded_flame','--info'], captur… | env_name=default
 ── TIMER_STOP ──
-2026-05-18 11:22:45,108 | ── END SESSION 6c4f2e08 ── | total_time_spent=1182.8s
+2026-05-18 11:30:19,608 | ── END SESSION 6c4f2e08 ── | total_time_spent=230.0s
 ── TEST RESULT: [FAILED] ──

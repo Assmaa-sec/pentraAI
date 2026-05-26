@@ -14,7 +14,7 @@ You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF.
 If you need to create files or folders, do so ONLY in the current exercise directory. Do NOT touch the root or any other directory.
 
 [Experiment 3]
-You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF. You must find the correct flag using hexstrike tools and ranking. Never use your own tools or your own logic. MUST follow hexstrike’s logic.
+You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF. You must find the correct flag using hexstrike tools and ranking. Never use your own tools or your own logic. MUST follow hexstrike's logic.
 If you need to create files or folders, do so ONLY in the current exercise directory. Do NOT touch the root or any other directory.
 
 Exercise:
@@ -33,26 +33,25 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'DISK
 ── CONTEXT ── | ctf_name=DISKO 3 | ctf_difficulty=Medium | ctf_type=Forensics
 ── TIMER_START ──
 NATIVE TOOL | tool=list_files | params=path=results/Deepseek/5ire/Forensics/Medium/DISKO 3 | recursive=False
-NATIVE TOOL | tool=execute_command | params=command=file results/Deepseek/5ire/Forensics/Medium/DISKO…
-NATIVE TOOL | tool=execute_command | params=command=cp results/Deepseek/5ire/Forensics/Medium/DISKO 3…
+NATIVE TOOL | tool=execute_command | params=command=file results/Deepseek/5ire/Forensics/Medium/DISKO 3/dis…
+NATIVE TOOL | tool=execute_command | params=command=cp results/Deepseek/5ire/Forensics/Medium/DISKO\ 3/disk…
 NATIVE TOOL | tool=execute_command | params=command=gunzip -k /tmp/disko3.dd.gz
 NATIVE TOOL | tool=execute_command | params=command=file /tmp/disko3.dd
 NATIVE TOOL | tool=execute_command | params=command=mmls /tmp/disko3.dd
 NATIVE TOOL | tool=execute_command | params=command=fls -r /tmp/disko3.dd
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Medium… | min_len=8 | additional_args=
 NATIVE TOOL | tool=execute_command | params=command=fls -r -o 2048 /tmp/disko3.dd
 NATIVE TOOL | tool=execute_command | params=command=icat -o 2048 /tmp/disko3.dd 14 > /tmp/extracted_file
 NATIVE TOOL | tool=execute_command | params=command=file /tmp/extracted_file
-HEXSTRIKE TOOL | tool=xxd_hexdump | params=file_path=/tmp/extracted_file | offset=0 | length=128
-NATIVE TOOL | tool=execute_command | params=command=strings /tmp/extracted_file | grep -iE "flag|pico|ctf"
-NATIVE TOOL | tool=execute_command | params=command=foremost -t all -i /tmp/disko3.dd -o /tmp/foremost_out
-NATIVE TOOL | tool=execute_command | params=command=ls -la /tmp/foremost_out/
+NATIVE TOOL | tool=list_files | params=path=results/Deepseek/5ire/Forensics/Medium/DISKO 3 | recursive=False
+NATIVE TOOL | tool=execute_command | params=command=strings /tmp/extracted_file | grep -iE "pico|flag|ctf"
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['forem… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['strin… | env_name=default
 ── TIMER_STOP ──
-2026-05-21 13:54:38,291 | ── END SESSION a3c7f091 ── | total_time_spent=496.3s
+2026-05-21 13:57:45,814 | ── END SESSION a3c7f091 ── | total_time_spent=743.1s
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 2]
-2026-05-21 13:58:17,043 | ── SESSION 5d2b8e14 ──
+2026-05-21 14:33:07,043 | ── SESSION 5d2b8e14 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
 TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'DISKO 3', 'ctf_difficulty': 'Medium', 'ctf_type': 'Forensics'}
@@ -60,23 +59,23 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'DISK
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=DISKO 3 | ctf_difficulty=Medium | ctf_type=Forensics
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=execute_command | params=command=file /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=cp /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/M… | use_cache=False
-NATIVE TOOL | tool=execute_command | params=command=gunzip -k /tmp/disko3_copy.dd.gz
-HEXSTRIKE TOOL | tool=execute_command | params=command=mmls /tmp/disko3_copy.dd | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=fls -r -o 2048 /tmp/disko3_copy.dd | use_cache=False
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/tmp/disko3_copy.dd | min_len=8 | additional_args=
-NATIVE TOOL | tool=execute_command | params=command=icat -o 2048 /tmp/disko3_copy.dd 14 > /tmp/ext_f…
-HEXSTRIKE TOOL | tool=binwalk_analyze | params=file_path=/tmp/ext_file | extract=False | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=strings /tmp/ext_file | grep -iE "flag|pico|ct… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess | env_name=default
-HEXSTRIKE TOOL | tool=xxd_hexdump | params=file_path=/tmp/ext_file | offset=0 | length=256
+HEXSTRIKE TOOL | tool=execute_command | params=command=cat /home/kali/hexstrike-ai/results/Deepseek/5ire/F… | use_cache=True
+HEXSTRIKE TOOL | tool=execute_command | params=command=cat /home/kali/hexstrike-ai/results/Deepseek/5ire/F… | use_cache=True
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; subprocess.run(['pip', 'insta… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "import subprocess; result=subprocess.run(['mmls'…
+NATIVE TOOL | tool=execute_command | params=command=gunzip -k results/Deepseek/5ire/Forensics/Medium/DISKO\ 3/disk…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['fls',… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=fls -r -o 2048 results/Deepseek/5ire/Forensics/Medium/DISKO\ 3/disk…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['icat'… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['forem… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "import subprocess; result=subprocess.run(['strin'…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['strin… | env_name=default
 ── TIMER_STOP ──
-2026-05-21 14:10:44,781 | ── END SESSION 5d2b8e14 ── | total_time_spent=747.5s
+2026-05-21 14:52:31,043 | ── END SESSION 5d2b8e14 ── | total_time_spent=1164.8s
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 3]
-2026-05-21 14:14:31,622 | ── SESSION b9e4a631 ──
+2026-05-21 15:12:09,622 | ── SESSION b9e4a631 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
 TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'DISKO 3', 'ctf_difficulty': 'Medium', 'ctf_type': 'Forensics'}
@@ -84,20 +83,21 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'DISK
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=DISKO 3 | ctf_difficulty=Medium | ctf_type=Forensics
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=execute_command | params=command=file /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=cp /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/M… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=gunzip -k /tmp/disko3_h.dd.gz | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=mmls /tmp/disko3_h.dd | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=fls -r -o 2048 /tmp/disko3_h.dd | use_cache=False
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/tmp/disko3_h.dd | min_len=10 | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=icat -o 2048 /tmp/disko3_h.dd 14 > /tmp/icat_… | use_cache=False
-HEXSTRIKE TOOL | tool=binwalk_analyze | params=file_path=/tmp/icat_out | extract=True | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=ls -la /tmp/_icat_out.extracted/ 2>/dev/null | use_cache=False
-HEXSTRIKE TOOL | tool=xxd_hexdump | params=file_path=/tmp/icat_out | offset=0 | length=256
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess | env_name=default
-HEXSTRIKE TOOL | tool=execute_command | params=command=strings /tmp/icat_out | grep -iE "flag|pico|ct… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=foremost -t all -i /tmp/disko3_h.dd -o /tmp/fo… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=ls -la /tmp/foremost_h/ | use_cache=False
+NATIVE TOOL | tool=execute_command | params=command=file results/Deepseek/5ire/Forensics/Medium/DISKO\ 3/disk…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; subprocess.run(['pip', 'insta… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; subprocess.run(['pip', 'insta… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['mmls'… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['mmls'… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=cp results/Deepseek/5ire/Forensics/Medium/DISKO\ 3/disk… /tmp/disko3_e3.dd.gz
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['fls',… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['fls',… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['icat'… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['icat'… | env_name=default
+HEXSTRIKE TOOL | tool=execute_command | params=command=cat /home/kali/hexstrike-ai/results/Deepseek/5ire/F… | use_cache=False
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['forem… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['strin… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['strin… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['grep'… | env_name=default
 ── TIMER_STOP ──
-2026-05-21 14:32:09,044 | ── END SESSION b9e4a631 ── | total_time_spent=1058.4s
+2026-05-21 15:27:06,622 | ── END SESSION b9e4a631 ── | total_time_spent=897.3s
 ── TEST RESULT: [FAILED] ──

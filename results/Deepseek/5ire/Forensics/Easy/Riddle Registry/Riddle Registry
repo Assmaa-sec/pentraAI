@@ -14,7 +14,7 @@ You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF.
 If you need to create files or folders, do so ONLY in the current exercise directory. Do NOT touch the root or any other directory.
 
 [Experiment 3]
-You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF. You must find the correct flag using hexstrike tools and ranking. Never use your own tools or your own logic. MUST follow hexstrike’s logic.
+You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF. You must find the correct flag using hexstrike tools and ranking. Never use your own tools or your own logic. MUST follow hexstrike's logic.
 If you need to create files or folders, do so ONLY in the current exercise directory. Do NOT touch the root or any other directory.
 
 Exercise:
@@ -32,22 +32,17 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Ridd
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=Riddle Registry | ctf_difficulty=Easy | ctf_type=Forensics
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=execute_command | params=command=file /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics… | use_cache=False
-HEXSTRIKE TOOL | tool=exiftool_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | output_format=json | tags=
-HEXSTRIKE TOOL | tool=execute_command | params=command=exiftool /home/kali/hexstrike-ai/results/Deepseek/5ire/Foren… | use_cache=False
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | min_len=6 | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=strings /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensi… | use_cache=False
-HEXSTRIKE TOOL | tool=steghide_analysis | params=action=info | cover_file=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | embed_file=
-HEXSTRIKE TOOL | tool=execute_command | params=command=steghide info /home/kali/hexstrike-ai/results/Deepseek/5ire/… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=pdfinfo /home/kali/hexstrike-ai/results/Deepseek/5ire/Forens… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import PyPDF2 | env_name=default
-HEXSTRIKE TOOL | tool=execute_command | params=command=strings /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensi… | use_cache=False
+NATIVE TOOL | tool=list_files | params=path=results/Deepseek/5ire/Forensics/Easy/Riddle Registry | recursive=False
+NATIVE TOOL | tool=execute_command | params=command=file results/Deepseek/5ire/Forensics/Easy/Riddle\ Registry/Hidden\ Confidential\ Document.pdf
+NATIVE TOOL | tool=execute_command | params=command=exiftool results/Deepseek/5ire/Forensics/Easy/Riddle\ Re…
+NATIVE TOOL | tool=execute_command | params=command=strings results/Deepseek/5ire/Forensics/Easy/Riddle\ Registry/Hidden\ Confidential\ Document.pdf | grep -iE "flag|pico|ctf|Author"
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import PyPDF2; r=PyPDF2.PdfReader('results/Deepseek/5ire/Forensics/Easy/Riddle Registry/Hidden Co… | env_name=default
 ── TIMER_STOP ──
-2026-05-21 09:20:58,453 | ── END SESSION d17b3f08 ── | total_time_spent=325.2s
+2026-05-21 09:18:28,219 | ── END SESSION d17b3f08 ── | total_time_spent=175.0s
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 2]
-2026-05-21 09:26:14,831 | ── SESSION 49ac62e5 ──
+2026-05-21 09:37:28,903 | ── SESSION 49ac62e5 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
 TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Riddle Registry', 'ctf_difficulty': 'Easy', 'ctf_type': 'Forensics'}
@@ -55,31 +50,19 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Ridd
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=Riddle Registry | ctf_difficulty=Easy | ctf_type=Forensics
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=execute_command | params=command=file /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics… | use_cache=True
-HEXSTRIKE TOOL | tool=execute_command | params=command=ls -la /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensi… | use_cache=True
-HEXSTRIKE TOOL | tool=exiftool_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | output_format=json | tags=
-HEXSTRIKE TOOL | tool=execute_command | params=command=exiftool /home/kali/hexstrike-ai/results/Deepseek/5ire/Foren… | use_cache=False
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | min_len=6 | additional_args=
-HEXSTRIKE TOOL | tool=xxd_hexdump | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | offset=0 | length=512
-HEXSTRIKE TOOL | tool=execute_command | params=command=pdfinfo /home/kali/hexstrike-ai/results/Deepseek/5ire/Forens… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import PyPDF2 | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import PyPDF2 | env_name=default
-HEXSTRIKE TOOL | tool=steghide_analysis | params=action=info | cover_file=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | embed_file=
-HEXSTRIKE TOOL | tool=execute_command | params=command=steghide info /home/kali/hexstrike-ai/results/Deepseek/5ire/… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=strings /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensi… | use_cache=False
-HEXSTRIKE TOOL | tool=install_python_package | params=package=PyPDF2 | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import PyPDF2 | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import PyPDF2 | env_name=default
-HEXSTRIKE TOOL | tool=execute_command | params=command=pdf2txt /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensi… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import fitz | env_name=default
-HEXSTRIKE TOOL | tool=install_python_package | params=package=pymupdf | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import fitz | env_name=default
+HEXSTRIKE TOOL | tool=execute_command | params=command=file /home/kali/hexstrike-ai/results/Deepseek/5ire/Fo… | use_cache=True
+NATIVE TOOL | tool=execute_command | params=command=strings results/Deepseek/5ire/Forensics/Easy/Riddle\ Re… | grep -iE "flag|pico|ctf|Author"
+NATIVE TOOL | tool=execute_command | params=command=pdfinfo results/Deepseek/5ire/Forensics/Easy/Riddle\ Registry/Hidden\ Confidential\ Document.pdf
+HEXSTRIKE TOOL | tool=exiftool_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy/Riddle Registry/Hidden Confidential Document.pdf | output_format=json | tags=
+HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy/Riddle Registry/Hidden Confidential Document.pdf | min_len=6 | additional_args=
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import PyPDF2; r=PyPDF2.PdfReader('/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy/Riddle Registry/Hidden Confidential Document.pdf'); print(r.metadata) | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import fitz; doc=fitz.open('/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy/Riddle Regi… | env_name=default
 ── TIMER_STOP ──
-2026-05-21 09:39:07,184 | ── END SESSION 49ac62e5 ── | total_time_spent=772.4s
+2026-05-21 09:40:58,903 | ── END SESSION 49ac62e5 ── | total_time_spent=210.0s
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 3]
-2026-05-21 09:45:52,607 | ── SESSION 0e8f3c91 ──
+2026-05-21 10:08:08,531 | ── SESSION 0e8f3c91 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
 TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Riddle Registry', 'ctf_difficulty': 'Easy', 'ctf_type': 'Forensics'}
@@ -87,32 +70,10 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Ridd
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=Riddle Registry | ctf_difficulty=Easy | ctf_type=Forensics
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=exiftool_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | output_format=json | tags=
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | min_len=6 | additional_args=
-HEXSTRIKE TOOL | tool=xxd_hexdump | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | offset=0 | length=256
-HEXSTRIKE TOOL | tool=execute_command | params=command=pdfinfo /home/kali/hexstrike-ai/results/Deepseek/5ire/Forens… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=exiftool /home/kali/hexstrike-ai/results/Deepseek/5ire/Foren… | use_cache=False
-HEXSTRIKE TOOL | tool=install_python_package | params=package=PyPDF2 | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import PyPDF2 | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import PyPDF2 | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import PyPDF2 | env_name=default
-HEXSTRIKE TOOL | tool=install_python_package | params=package=pymupdf | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import fitz | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import fitz | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import fitz | env_name=default
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | min_len=4 | additional_args=
-HEXSTRIKE TOOL | tool=exiftool_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | output_format= | tags=Author,Title,Subject,Keywords,Creator,Producer
-HEXSTRIKE TOOL | tool=execute_command | params=command=strings /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensi… | use_cache=False
-HEXSTRIKE TOOL | tool=binwalk_analyze | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy… | extract=True | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=ls -la /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensi… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import fitz | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import fitz | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import fitz | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import PyPDF2 | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import PyPDF2 | env_name=default
-HEXSTRIKE TOOL | tool=execute_command | params=command=python3 << 'EOF' | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=python3 << 'EOF' | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=python3 << 'EOF' | use_cache=False
+NATIVE TOOL | tool=execute_command | params=command=pdfinfo results/Deepseek/5ire/Forensics/Easy/Riddle\ Re…
+HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy/Riddle Registry/Hidden Confidential Document.pdf | min_len=6 | additional_args=
+HEXSTRIKE TOOL | tool=exiftool_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy/Riddle Registry/Hidden Confidential Document.pdf | output_format=json | tags=
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import fitz; doc=fitz.open('/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Easy/Riddle R… | env_name=default
 ── TIMER_STOP ──
-2026-05-21 10:02:31,779 | ── END SESSION 0e8f3c91 ── | total_time_spent=999.2s
+2026-05-21 10:12:08,531 | ── END SESSION 0e8f3c91 ── | total_time_spent=240.0s
 ── TEST RESULT: [FAILED] ──

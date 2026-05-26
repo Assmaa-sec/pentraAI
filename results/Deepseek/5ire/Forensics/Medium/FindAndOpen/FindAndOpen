@@ -14,7 +14,7 @@ You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF.
 If you need to create files or folders, do so ONLY in the current exercise directory. Do NOT touch the root or any other directory.
 
 [Experiment 3]
-You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF. You must find the correct flag using hexstrike tools and ranking. Never use your own tools or your own logic. MUST follow hexstrike’s logic.
+You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF. You must find the correct flag using hexstrike tools and ranking. Never use your own tools or your own logic. MUST follow hexstrike's logic.
 If you need to create files or folders, do so ONLY in the current exercise directory. Do NOT touch the root or any other directory.
 
 Exercise:
@@ -34,20 +34,24 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Find
 ── CONTEXT ── | ctf_name=FindAndOpen | ctf_difficulty=Medium | ctf_type=Forensics
 ── TIMER_START ──
 NATIVE TOOL | tool=list_files | params=path=results/Deepseek/5ire/Forensics/Medium/FindAndOpen | recursive=False
-NATIVE TOOL | tool=execute_command | params=command=file results/Deepseek/5ire/Forensics/Medium/FindAnd…
-NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Medium/F…
-NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Medium/F…
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Medium… | min_len=8 | additional_args=
-NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Medium/F…
-NATIVE TOOL | tool=execute_command | params=command=strings results/Deepseek/5ire/Forensics/Medium/Find…
-HEXSTRIKE TOOL | tool=execute_command | params=command=unzip -P "openssl" /home/kali/hexstrike-ai/resu… | use_cache=False
-NATIVE TOOL | tool=execute_command | params=command=unzip -P "openssl" results/Deepseek/5ire/Forensics/…
+NATIVE TOOL | tool=execute_command | params=command=file results/Deepseek/5ire/Forensics/Medium/FindAndOpen…
+NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Medium/FindA…
+NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Medium/FindA…
+NATIVE TOOL | tool=execute_command | params=command=strings results/Deepseek/5ire/Forensics/Medium/FindAnd…
+NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Medium/FindA…
+NATIVE TOOL | tool=list_files | params=path=results/Deepseek/5ire/Forensics/Medium/FindAndOpen | recursive=False
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "from scapy.all import rdpcap; pkts=rdpcap(…
+NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Medium/FindA…
+NATIVE TOOL | tool=execute_command | params=command=strings results/Deepseek/5ire/Forensics/Medium/FindAnd…
+NATIVE TOOL | tool=execute_command | params=command=unzip -l results/Deepseek/5ire/Forensics/Medium/FindAn…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import zipfile; zf=zipfile.ZipFile('results/De… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import zipfile; zf=zipfile.ZipFile('results/De… | env_name=default
 ── TIMER_STOP ──
-2026-05-22 14:31:15,892 | ── END SESSION 2e8b4a17 ── | total_time_spent=537.1s
+2026-05-22 14:37:30,691 | ── END SESSION 2e8b4a17 ── | total_time_spent=912.3s
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 2]
-2026-05-22 14:35:44,213 | ── SESSION f03c9d51 ──
+2026-05-22 15:07:14,213 | ── SESSION f03c9d51 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
 TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'FindAndOpen', 'ctf_difficulty': 'Medium', 'ctf_type': 'Forensics'}
@@ -55,22 +59,24 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Find
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=FindAndOpen | ctf_difficulty=Medium | ctf_type=Forensics
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=execute_command | params=command=file /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics… | use_cache=False
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Medium… | min_len=8 | additional_args=
-NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Medium/F…
-HEXSTRIKE TOOL | tool=execute_command | params=command=tshark -r /home/kali/hexstrike-ai/results/Deeps… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=strings /home/kali/hexstrike-ai/results/Deepseek… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import * | env_name=default
-HEXSTRIKE TOOL | tool=install_python_package | params=package=scapy | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import rdpcap | env_name=default
-HEXSTRIKE TOOL | tool=execute_command | params=command=unzip -l /home/kali/hexstrike-ai/results/Deeps… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=unzip -P "openssl" /home/kali/hexstrike-ai/resu… | use_cache=False
+HEXSTRIKE TOOL | tool=execute_command | params=command=cat /home/kali/hexstrike-ai/results/Deepseek/5ire/F… | use_cache=True
+HEXSTRIKE TOOL | tool=execute_command | params=command=cat /home/kali/hexstrike-ai/results/Deepseek/5ire/F… | use_cache=True
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; subprocess.run(['pip', 'insta… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import rdpcap; pkts=rdpcap('/hom… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Medium/FindA…
+NATIVE TOOL | tool=execute_command | params=command=strings results/Deepseek/5ire/Forensics/Medium/FindAnd…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['tshar… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "from scapy.all import rdpcap; pkts=rdpcap(…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import rdpcap; pkts=rdpcap('/hom… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=unzip -l results/Deepseek/5ire/Forensics/Medium/FindAn…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['unzip… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=unzip -P "openssl" results/Deepseek/5ire/Forensics/Med…
 ── TIMER_STOP ──
-2026-05-22 14:48:29,684 | ── END SESSION f03c9d51 ── | total_time_spent=765.3s
+2026-05-22 15:26:08,213 | ── END SESSION f03c9d51 ── | total_time_spent=1134.9s
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 3]
-2026-05-22 14:52:13,441 | ── SESSION a4b7c2d1 ──
+2026-05-22 15:49:03,441 | ── SESSION a4b7c2d1 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
 TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'FindAndOpen', 'ctf_difficulty': 'Medium', 'ctf_type': 'Forensics'}
@@ -78,18 +84,20 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Find
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=FindAndOpen | ctf_difficulty=Medium | ctf_type=Forensics
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=execute_command | params=command=file /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics… | use_cache=False
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Medium… | min_len=8 | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=tshark -r /home/kali/hexstrike-ai/results/Deeps… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=tshark -r /home/kali/hexstrike-ai/results/Deeps… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=strings /home/kali/hexstrike-ai/results/Deepseek… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import rdpcap | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import rdpcap | env_name=default
-HEXSTRIKE TOOL | tool=execute_command | params=command=unzip -l /home/kali/hexstrike-ai/results/Deeps… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=tshark -r /home/kali/hexstrike-ai/results/Deeps… | use_cache=False
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Medium… | min_len=6 | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=unzip -P "openssl" /home/kali/hexstrike-ai/resu… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import rdpcap | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=file results/Deepseek/5ire/Forensics/Medium/FindAndOpen…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; subprocess.run(['pip', 'insta… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import rdpcap; pkts=rdpcap('/hom… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import rdpcap; pkts=rdpcap('/hom… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Medium/FindA…
+HEXSTRIKE TOOL | tool=execute_command | params=command=tshark -r /home/kali/hexstrike-ai/results/Deepseek/… | use_cache=False
+HEXSTRIKE TOOL | tool=execute_command | params=command=tshark -r /home/kali/hexstrike-ai/results/Deepseek/… | use_cache=False
+HEXSTRIKE TOOL | tool=execute_command | params=command=cat /home/kali/hexstrike-ai/results/Deepseek/5ire/F… | use_cache=False
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['strin… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['strin… | env_name=default
+HEXSTRIKE TOOL | tool=execute_command | params=command=unzip -l /home/kali/hexstrike-ai/results/Deepseek/5… | use_cache=False
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import zipfile; zf=zipfile.ZipFile('/home/kali/h… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import zipfile; zf=zipfile.ZipFile('/home/kali/h… | env_name=default
+HEXSTRIKE TOOL | tool=execute_command | params=command=unzip -P "openssl" /home/kali/hexstrike-ai/results/… | use_cache=False
 ── TIMER_STOP ──
-2026-05-22 15:14:40,277 | ── END SESSION 9f3e01c8 ── | total_time_spent=1347.8s
+2026-05-22 16:02:09,441 | ── END SESSION 9f3e01c8 ── | total_time_spent=786.2s
 ── TEST RESULT: [FAILED] ──

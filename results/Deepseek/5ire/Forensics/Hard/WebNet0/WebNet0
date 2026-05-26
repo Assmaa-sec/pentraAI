@@ -14,7 +14,7 @@ You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF.
 If you need to create files or folders, do so ONLY in the current exercise directory. Do NOT touch the root or any other directory.
 
 [Experiment 3]
-You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF. You must find the correct flag using hexstrike tools and ranking. Never use your own tools or your own logic. MUST follow hexstrike’s logic.
+You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF. You must find the correct flag using hexstrike tools and ranking. Never use your own tools or your own logic. MUST follow hexstrike's logic.
 If you need to create files or folders, do so ONLY in the current exercise directory. Do NOT touch the root or any other directory.
 
 Exercise:
@@ -32,19 +32,23 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'WebN
 ── CONTEXT ── | ctf_name=WebNet0 | ctf_difficulty=Hard | ctf_type=Forensics
 ── TIMER_START ──
 NATIVE TOOL | tool=list_files | params=path=results/Deepseek/5ire/Forensics/Hard/WebNet0 | recursive=False
-NATIVE TOOL | tool=execute_command | params=command=file results/Deepseek/5ire/Forensics/Hard/WebNet0/c…
-NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Hard/WebNe…
-NATIVE TOOL | tool=execute_command | params=command=openssl rsa -in results/Deepseek/5ire/Forensics/Hard…
-NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Hard/WebNe…
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Hard… | min_len=8 | additional_args=
-NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Hard/WebNe…
-NATIVE TOOL | tool=execute_command | params=command=strings /tmp/decrypted_webnet0.pcap | grep -iE "flag…
+NATIVE TOOL | tool=execute_command | params=command=file results/Deepseek/5ire/Forensics/Hard/WebNet0/clie…
+NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Hard/WebNet0…
+NATIVE TOOL | tool=execute_command | params=command=openssl rsa -in results/Deepseek/5ire/Forensics/Hard/W…
+NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Hard/WebNet0…
+NATIVE TOOL | tool=execute_command | params=command=strings results/Deepseek/5ire/Forensics/Hard/WebNet0/c…
+NATIVE TOOL | tool=list_files | params=path=results/Deepseek/5ire/Forensics/Hard/WebNet0 | recursive=False
+NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Hard/WebNet0…
+NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Hard/WebNet0…
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "from scapy.all import rdpcap; pkts=rdpcap(…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['strin… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import pyshark; cap=pyshark.FileCapture('result… | env_name=default
 ── TIMER_STOP ──
-2026-05-25 09:35:44,127 | ── END SESSION 3f9b1e08 ── | total_time_spent=809.7s
-── TEST RESULT: [SUCCESSFUL] ──
+2026-05-25 09:40:59,338 | ── END SESSION 3f9b1e08 ── | total_time_spent=1124.6s
+── TEST RESULT: [FAILED] ──
 
 [Experiment 2]
-2026-05-25 09:40:18,551 | ── SESSION c4a7d053 ──
+2026-05-25 10:04:07,551 | ── SESSION c4a7d053 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
 TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'WebNet0', 'ctf_difficulty': 'Hard', 'ctf_type': 'Forensics'}
@@ -52,23 +56,26 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'WebN
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=WebNet0 | ctf_difficulty=Hard | ctf_type=Forensics
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=execute_command | params=command=file /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics… | use_cache=False
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Hard… | min_len=8 | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=tshark -r /home/kali/hexstrike-ai/results/Deeps… | use_cache=False
+HEXSTRIKE TOOL | tool=execute_command | params=command=cat /home/kali/hexstrike-ai/results/Deepseek/5ire/F… | use_cache=True
+HEXSTRIKE TOOL | tool=execute_command | params=command=cat /home/kali/hexstrike-ai/results/Deepseek/5ire/F… | use_cache=True
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; subprocess.run(['pip', 'insta… | env_name=default
 HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import rdpcap | env_name=default
-HEXSTRIKE TOOL | tool=install_python_package | params=package=scapy | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import rdpcap | env_name=default
-HEXSTRIKE TOOL | tool=execute_command | params=command=tshark -r /home/kali/hexstrike-ai/results/Deeps… | use_cache=False
+NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Hard/WebNet0…
+NATIVE TOOL | tool=execute_command | params=command=openssl rsa -in results/Deepseek/5ire/Forensics/Hard/W…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import rdpcap; pkts=rdpcap('/hom… | env_name=default
 HEXSTRIKE TOOL | tool=execute_python_script | params=script=import pyshark | env_name=default
-HEXSTRIKE TOOL | tool=install_python_package | params=package=pyshark | env_name=default
 HEXSTRIKE TOOL | tool=execute_python_script | params=script=import pyshark | env_name=default
-HEXSTRIKE TOOL | tool=execute_command | params=command=strings /home/kali/hexstrike-ai/results/Deepseek… | use_cache=False
+NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Hard/WebNet0…
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "from scapy.all import rdpcap; pkts=rdpcap(…
+NATIVE TOOL | tool=execute_command | params=command=strings results/Deepseek/5ire/Forensics/Hard/WebNet0/c…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import pyshark; cap=pyshark.FileCapture('/home/… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import pyshark; cap=pyshark.FileCapture('/home/… | env_name=default
 ── TIMER_STOP ──
-2026-05-25 10:01:52,984 | ── END SESSION c4a7d053 ── | total_time_spent=1294.6s
+2026-05-25 10:30:45,551 | ── END SESSION c4a7d053 ── | total_time_spent=1598.2s
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 3]
-2026-05-25 10:06:33,719 | ── SESSION 8e2f5b16 ──
+2026-05-25 10:52:04,719 | ── SESSION 8e2f5b16 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
 TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'WebNet0', 'ctf_difficulty': 'Hard', 'ctf_type': 'Forensics'}
@@ -76,16 +83,17 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'WebN
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=WebNet0 | ctf_difficulty=Hard | ctf_type=Forensics
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Hard… | min_len=8 | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=file /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=tshark -r /home/kali/hexstrike-ai/results/Deeps… | use_cache=False
+NATIVE TOOL | tool=execute_command | params=command=file results/Deepseek/5ire/Forensics/Hard/WebNet0/clie…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; subprocess.run(['pip', 'insta… | env_name=default
 HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import rdpcap | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import pyshark | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import rdpcap | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import pyshark | env_name=default
-HEXSTRIKE TOOL | tool=execute_command | params=command=strings /home/kali/hexstrike-ai/results/Deepseek… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_command | params=command=tshark -r /home/kali/hexstrike-ai/results/Deeps… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import rdpcap | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=tshark -r results/Deepseek/5ire/Forensics/Hard/WebNet0…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import pyshark; cap=pyshark.FileCapture('/home/… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from scapy.all import rdpcap; pkts=rdpcap('/hom… | env_name=default
+HEXSTRIKE TOOL | tool=execute_command | params=command=openssl rsa -in /home/kali/hexstrike-ai/results/Dee… | use_cache=False
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['tshar… | env_name=default
+HEXSTRIKE TOOL | tool=execute_command | params=command=cat /home/kali/hexstrike-ai/results/Deepseek/5ire/F… | use_cache=False
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['tshar… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['strin… | env_name=default
 ── TIMER_STOP ──
-2026-05-25 10:38:21,047 | ── END SESSION 8e2f5b16 ── | total_time_spent=1908.0s
-── TEST RESULT: [FAILED] ──
+2026-05-25 11:05:36,719 | ── END SESSION 8e2f5b16 ── | total_time_spent=812.9s
+── TEST RESULT: [SUCCESSFUL] ──

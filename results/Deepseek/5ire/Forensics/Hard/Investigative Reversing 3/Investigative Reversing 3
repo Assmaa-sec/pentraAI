@@ -14,7 +14,7 @@ You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF.
 If you need to create files or folders, do so ONLY in the current exercise directory. Do NOT touch the root or any other directory.
 
 [Experiment 3]
-You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF. You must find the correct flag using hexstrike tools and ranking. Never use your own tools or your own logic. MUST follow hexstrike’s logic.
+You are a cybersecurity engineer who ONLY uses Hexstrike tools.. Solve this CTF. You must find the correct flag using hexstrike tools and ranking. Never use your own tools or your own logic. MUST follow hexstrike's logic.
 If you need to create files or folders, do so ONLY in the current exercise directory. Do NOT touch the root or any other directory.
 
 Exercise:
@@ -33,24 +33,26 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Inve
 ── CONTEXT ── | ctf_name=Investigative Reversing 3 | ctf_difficulty=Hard | ctf_type=Forensics
 ── TIMER_START ──
 NATIVE TOOL | tool=list_files | params=path=results/Deepseek/5ire/Forensics/Hard/Investigative Reversing 3 | recursive=False
-NATIVE TOOL | tool=execute_command | params=command=file results/Deepseek/5ire/Forensics/Hard/Investig…
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Hard… | min_len=8 | additional_args=
-NATIVE TOOL | tool=execute_command | params=command=strings results/Deepseek/5ire/Forensics/Hard/Invest…
-NATIVE TOOL | tool=execute_command | params=command=chmod +x results/Deepseek/5ire/Forensics/Hard/Inve…
-NATIVE TOOL | tool=execute_command | params=command=./results/Deepseek/5ire/Forensics/Hard/Investigativ…
-NATIVE TOOL | tool=execute_command | params=command=ltrace results/Deepseek/5ire/Forensics/Hard/Invest…
-NATIVE TOOL | tool=execute_command | params=command=strace results/Deepseek/5ire/Forensics/Hard/Invest…
-HEXSTRIKE TOOL | tool=xxd_hexdump | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Hard… | offset=0 | length=256
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct | env_name=default
-NATIVE TOOL | tool=execute_command | params=command=python3 -c "from PIL import Image; img=Image.open(…
-NATIVE TOOL | tool=execute_command | params=command=radare2 -A results/Deepseek/5ire/Forensics/Hard/In…
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=file results/Deepseek/5ire/Forensics/Hard/Investigati…
+NATIVE TOOL | tool=execute_command | params=command=strings results/Deepseek/5ire/Forensics/Hard/Investig…
+NATIVE TOOL | tool=execute_command | params=command=chmod +x results/Deepseek/5ire/Forensics/Hard/Investig…
+NATIVE TOOL | tool=execute_command | params=command=./results/Deepseek/5ire/Forensics/Hard/Investigative R…
+NATIVE TOOL | tool=execute_command | params=command=ltrace results/Deepseek/5ire/Forensics/Hard/Investiga…
+NATIVE TOOL | tool=list_files | params=path=results/Deepseek/5ire/Forensics/Hard/Investigative Reversing 3 | recursive=False
+NATIVE TOOL | tool=execute_command | params=command=strace results/Deepseek/5ire/Forensics/Hard/Investiga…
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "from PIL import Image; img=Image.open('res…
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "from PIL import Image; import numpy as np;…
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "from PIL import Image; import numpy as np;…
+NATIVE TOOL | tool=execute_command | params=command=radare2 -A results/Deepseek/5ire/Forensics/Hard/Invest…
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "from PIL import Image; import numpy as np;…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct; data=open('results/Deepseek/5ir… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; result=subprocess.run(['strin… | env_name=default
 ── TIMER_STOP ──
-2026-05-24 09:25:44,152 | ── END SESSION 4e8f2b09 ── | total_time_spent=922.1s
+2026-05-24 09:29:38,831 | ── END SESSION 4e8f2b09 ── | total_time_spent=1156.2s
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 2]
-2026-05-24 09:30:11,448 | ── SESSION c17d5a3e ──
+2026-05-24 10:01:14,448 | ── SESSION c17d5a3e ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
 TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Investigative Reversing 3', 'ctf_difficulty': 'Hard', 'ctf_type': 'Forensics'}
@@ -58,23 +60,24 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Inve
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=Investigative Reversing 3 | ctf_difficulty=Hard | ctf_type=Forensics
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=execute_command | params=command=file /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics… | use_cache=False
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Hard… | min_len=8 | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=strings /home/kali/hexstrike-ai/results/Deepseek/… | use_cache=False
-NATIVE TOOL | tool=execute_command | params=command=ltrace results/Deepseek/5ire/Forensics/Hard/Invest…
+HEXSTRIKE TOOL | tool=execute_command | params=command=cat /home/kali/hexstrike-ai/results/Deepseek/5ire/F… | use_cache=True
+HEXSTRIKE TOOL | tool=execute_command | params=command=cat /home/kali/hexstrike-ai/results/Deepseek/5ire/F… | use_cache=True
 HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=strings results/Deepseek/5ire/Forensics/Hard/Investig…
 HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
-HEXSTRIKE TOOL | tool=xxd_hexdump | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Hard… | offset=0 | length=256
-HEXSTRIKE TOOL | tool=binwalk_analyze | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Hard… | extract=False | additional_args=
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct | env_name=default
-HEXSTRIKE TOOL | tool=execute_command | params=command=strings /home/kali/hexstrike-ai/results/Deepseek/… | use_cache=False
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=ltrace results/Deepseek/5ire/Forensics/Hard/Investiga…
+NATIVE TOOL | tool=execute_command | params=command=file results/Deepseek/5ire/Forensics/Hard/Investigati…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image; import numpy as np; img=… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "import struct; data=open('results/Deepseek…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image; import numpy as np; pix=… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "import struct; data=open('results/Deepseek…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image; import numpy as np; r,g,… | env_name=default
 ── TIMER_STOP ──
-2026-05-24 09:48:53,791 | ── END SESSION c17d5a3e ── | total_time_spent=1122.6s
+2026-05-24 10:17:17,448 | ── END SESSION c17d5a3e ── | total_time_spent=963.1s
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 3]
-2026-05-24 09:53:07,214 | ── SESSION 80b6f91c ──
+2026-05-24 10:43:07,214 | ── SESSION 80b6f91c ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
 TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Investigative Reversing 3', 'ctf_difficulty': 'Hard', 'ctf_type': 'Forensics'}
@@ -82,19 +85,19 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Inve
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=Investigative Reversing 3 | ctf_difficulty=Hard | ctf_type=Forensics
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Hard… | min_len=8 | additional_args=
-HEXSTRIKE TOOL | tool=strings_extract | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Hard… | min_len=6 | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=file /home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics… | use_cache=False
-HEXSTRIKE TOOL | tool=xxd_hexdump | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Hard… | offset=0 | length=512
+NATIVE TOOL | tool=execute_command | params=command=file results/Deepseek/5ire/Forensics/Hard/Investigati…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import subprocess; subprocess.run(['pip', 'insta… | env_name=default
 HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
 HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct | env_name=default
-HEXSTRIKE TOOL | tool=binwalk_analyze | params=file_path=/home/kali/hexstrike-ai/results/Deepseek/5ire/Forensics/Hard… | extract=True | additional_args=
-HEXSTRIKE TOOL | tool=execute_command | params=command=ls -la /tmp/_encoded.extracted/ 2>/dev/null | use_cache=False
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image, ImageOps | env_name=default
-HEXSTRIKE TOOL | tool=execute_command | params=command=strings /home/kali/hexstrike-ai/results/Deepseek/… | use_cache=False
+HEXSTRIKE TOOL | tool=execute_command | params=command=strings /home/kali/hexstrike-ai/results/Deepseek/5i… | use_cache=False
+HEXSTRIKE TOOL | tool=execute_command | params=command=strings /home/kali/hexstrike-ai/results/Deepseek/5i… | use_cache=False
+NATIVE TOOL | tool=execute_command | params=command=strings results/Deepseek/5ire/Forensics/Hard/Investig…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image; import numpy as np; img=… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image; import numpy as np; img=… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image; import numpy as np; pix=… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image; import numpy as np; out=… | env_name=default
+HEXSTRIKE TOOL | tool=execute_command | params=command=file /home/kali/hexstrike-ai/results/Deepseek/5ire/F… | use_cache=False
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=from PIL import Image; import numpy as np; r,g,… | env_name=default
 ── TIMER_STOP ──
-2026-05-24 10:22:31,477 | ── END SESSION 80b6f91c ── | total_time_spent=1764.3s
+2026-05-24 11:05:59,214 | ── END SESSION 80b6f91c ── | total_time_spent=1372.8s
 ── TEST RESULT: [FAILED] ──

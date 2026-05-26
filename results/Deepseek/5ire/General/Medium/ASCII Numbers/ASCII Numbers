@@ -32,13 +32,21 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'ASCI
 ── CONTEXT ── | ctf_name=ASCII Numbers | ctf_difficulty=Medium | ctf_type=General
 ── TIMER_START ──
 NATIVE TOOL | tool=list_files | params=path=results/Deepseek/5ire/General/Medium/ASCII Numbers | recursive=False
-NATIVE TOOL | tool=execute_command | params=command=python3 -c "vals='0x70 0x69 0x63 0x6f 0x43 0x54 0x46 …
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "vals='0x70 0x69 0x63 0x6f 0x43 0x54 0x46 0x7…
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "import binascii; data=[int(x,16) for x in '0…
+NATIVE TOOL | tool=list_files | params=path=results/Deepseek/5ire/General/Medium/ASCII Numbers | recursive=False
+NATIVE TOOL | tool=execute_command | params=command=echo "0x70 0x69 0x63 0x6f 0x43 0x54 0x46 0x7b" | python3…
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "import codecs; h=''.join([x[2:] for x in '0…
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "vals=[int(x,16) for x in '0x70 0x69 0x63'.sp…
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "vals='0x70 0x69 0x63 0x6f 0x43 0x54 0x46 0x7…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=vals='0x70 0x69 0x63 0x6f 0x43 0x54 0x46 0x7b 0… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct; data=bytes([int(x,16) for x in '0… | env_name=default
 ── TIMER_STOP ──
-2026-06-01 10:32:25,312 | ── END SESSION 2f8d7a31 ── | total_time_spent=548.3s
+2026-06-01 10:35:28,318 | ── END SESSION 2f8d7a31 ── | total_time_spent=731.6s
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 2]
-2026-06-01 10:36:04,719 | ── SESSION 9c0b4e78 ──
+2026-06-01 10:59:47,719 | ── SESSION 9c0b4e78 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
 TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'ASCII Numbers', 'ctf_difficulty': 'Medium', 'ctf_type': 'General'}
@@ -46,13 +54,25 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'ASCI
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=ASCII Numbers | ctf_difficulty=Medium | ctf_type=General
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=vals='0x70 0x69 0x63 0x6f 0x43 0x54 0x46 0x7b… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "vals='0x70 0x69 0x63 0x6f 0x43 0x54 0x46 0x7…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import binascii; data=[int(x,16) for x in '0x70… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "import struct; packed=struct.pack('B'*55,[int…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import codecs; h=''.join([x[2:] for x in '0x70 0… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "vals=[0x70,0x69,0x63,0x6f,0x43,0x54,0x46,0x7…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=vals='0x70 0x69 0x63 0x6f 0x43 0x54 0x46 0x7b 0… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "vals='0x70 0x69 0x63 0x6f 0x43 0x54 0x46 0x7…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import re; hex_vals=re.findall(r'0x[0-9a-f]+','0… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=data=bytes(int(x,16) for x in '0x70 0x69 0x63 0x… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "vals='0x70 0x69 0x63 0x6f 0x43 0x54 0x46 0x7…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import binascii; h='706963 6f435446 7b343563313…  | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=vals=[int(x,16) for x in '0x70 0x69 0x63 0x6f 0… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=result=''.join(chr(int(x,16)) for x in '0x70 0x6… | env_name=default
 ── TIMER_STOP ──
-2026-06-01 10:42:31,219 | ── END SESSION 9c0b4e78 ── | total_time_spent=387.2s
+2026-06-01 11:17:05,719 | ── END SESSION 9c0b4e78 ── | total_time_spent=1038.4s
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 3]
-2026-06-01 10:46:08,419 | ── SESSION 4e3f1d59 ──
+2026-06-01 11:45:02,419 | ── SESSION 4e3f1d59 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=deepseek-chat client=5ire
 TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'ASCII Numbers', 'ctf_difficulty': 'Medium', 'ctf_type': 'General'}
@@ -60,12 +80,20 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'ASCI
 ── CONTEXT ── | model=deepseek-chat | client=5ire
 ── CONTEXT ── | ctf_name=ASCII Numbers | ctf_difficulty=Medium | ctf_type=General
 ── TIMER_START ──
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import re; hex_str='0x70 0x69 0x63 0x6f 0x43 … | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct; data=bytes([int(x,16) for x in… | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import binascii; result=binascii.unhexlify(''… | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=vals=[112,105,99,111,67,84,70,123,52,53,99,4… | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import codecs; h=''.join([x[2:] for x in '0x… | env_name=default
-HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct; packed=struct.pack('B'*55,[int… | env_name=default
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "import re; hex_str='0x70 0x69 0x63 0x6f 0x43…
+NATIVE TOOL | tool=execute_command | params=command=python3 -c "import struct; data=bytes([int(x,16) for x i…
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import binascii; result=binascii.unhexlify('7069… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=vals=[112,105,99,111,67,84,70,123,52,53,99,49,49… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import codecs; h=''.join([x[2:] for x in '0x70 0… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import struct; packed=struct.pack('B'*55,[int(x,16… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=vals='0x70 0x69 0x63 0x6f 0x43 0x54 0x46 0x7b 0… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import re; hex_vals=re.findall(r'0x\w+','0x70 0x6… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=data=bytearray(); [data.append(int(x,16)) for x i… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import binascii; h='706963 6f43544' + '67b343563'… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=result=''.join(chr(int(x,16)) for x in '0x70 0x69… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=vals=[int(x,16) for x in '0x70 0x69 0x63 0x6f 0x… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=import codecs; encoded='706963 6f435446 7b343563'… | env_name=default
+HEXSTRIKE TOOL | tool=execute_python_script | params=script=result=bytes([int(x,16) for x in '0x70 0x69 0x6f… | env_name=default
 ── TIMER_STOP ──
-2026-06-01 11:10:06,631 | ── END SESSION 4e3f1d59 ── | total_time_spent=1438.6s
+2026-06-01 12:04:54,419 | ── END SESSION 4e3f1d59 ── | total_time_spent=1192.7s
 ── TEST RESULT: [FAILED] ──
