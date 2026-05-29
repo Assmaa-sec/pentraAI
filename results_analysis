@@ -73,7 +73,7 @@ Key findings:
 Category      | Claude     | RooCode    | 5ire       | Combined   | Rate
 --------------|------------|------------|------------|------------|------
 Blockchain    | 12/12      | 12/12      |  3/12      |  27/36     | 75.0%
-Reversing     | 32/33      | 23/33      |  9/33      |  64/99     | 64.6%
+Reversing     | 32/33      | 23/33      |  9/33      |  64/99     | 63.4%
 Crypto        | 34/45      | 28/45      | 19/45      |  81/135    | 60.0%
 General       | 28/36      | 22/36      | 12/36      |  62/108    | 57.4%
 Forensics     | 39/45      | 31/45      |  4/45      |  74/135    | 54.8%
@@ -133,8 +133,8 @@ General/Easy:      S=14  F=0   P=1   Total=15
 General/Medium:    S=12  F=0   P=3   Total=15
 General/Hard:      S=2   F=4   P=0   Total=6
 Reversing/Easy:    S=9   F=0   P=0   Total=9
-Reversing/Medium:  S=11  F=0   P=1   Total=12
-Reversing/Hard:    S=12  F=0   P=0   Total=12
+Reversing/Medium:  S=11  F=0   P=1   Total=12   (Pico Bank excluded)
+Reversing/Hard:    S=12  F=0   P=0   Total=12   (MATRIX excluded)
 Web/Easy:          S=15  F=0   P=0   Total=15
 Web/Medium:        S=6   F=7   P=2   Total=15
 Web/Hard:          S=5   F=10  P=0   Total=15
@@ -156,7 +156,7 @@ General/Easy:      S=10  F=5   P=0   Total=15
 General/Medium:    S=12  F=3   P=0   Total=15
 General/Hard:      S=0   F=6   P=0   Total=6
 Reversing/Easy:    S=7   F=1   P=1   Total=9
-Reversing/Medium:  S=12  F=0   P=0   Total=12   (MATRIX excluded; Bypass Me stray template dropped)
+Reversing/Medium:  S=12  F=0   P=0   Total=12   (Pico Bank excluded)
 Reversing/Hard:    S=4   F=8   P=0   Total=12   (MATRIX excluded)
 Web/Easy:          S=15  F=0   P=0   Total=15
 Web/Medium:        S=3   F=10  P=2   Total=15
@@ -179,7 +179,7 @@ General/Easy:      S=8   F=6   P=1   Total=15
 General/Medium:    S=4   F=10  P=1   Total=15
 General/Hard:      S=0   F=5   P=1   Total=6
 Reversing/Easy:    S=6   F=2   P=1   Total=9
-Reversing/Medium:  S=2   F=9   P=1   Total=12
+Reversing/Medium:  S=2   F=9   P=1   Total=12   (Pico Bank excluded)
 Reversing/Hard:    S=1   F=10  P=1   Total=12   (MATRIX excluded)
 Web/Easy:          S=7   F=7   P=1   Total=15
 Web/Medium:        S=6   F=8   P=1   Total=15
