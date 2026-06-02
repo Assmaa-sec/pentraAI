@@ -1,0 +1,10 @@
+I have built my own Git server with my own rules!
+You can clone the challenge repo using the command below.
+git clone ssh://git@foggy-cliff.picoctf.net:[PORT]/git/challenge.git
+Here's the password: 4f7061f2
+Check the README to get your flag!
+
+Results:
+[Experiment 1]
+Previous results: ── TEST RESULT: [PARTIAL] ──
+── New log ──
