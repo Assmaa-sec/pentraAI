@@ -1,0 +1,26 @@
+# Results WITH Fixes
+
+Re-runs of the exercises that failed in `results/`, now with the hexfix fixes applied — a
+before/after comparison. Same folder layout as `results/`.
+
+Each exercise file = the challenge description + per experiment:
+
+    [Experiment N]
+    Previous results: ── TEST RESULT: [old] ──
+    ── New log ──        ← paste the new session block here
+
+## Pipeline (per exercise, per experiment)
+
+1. **Generate Prompt 2** with `prompt_generator.py` — fill in model / client / experiment /
+   name / category / difficulty / source-files / description (from the file) → Generate → Copy.
+2. **Prep:** replace `[PORT]` (launch the instance if needed); attach any files the challenge needs.
+3. **Run:** paste the prompt into the client.
+4. **Record:** copy the session block from `tool_logger.log` under `── New log ──`, and set
+   TEST RESULT to SUCCESSFUL / PARTIAL / FAILED (verify the flag on picoCTF).
+5. **Clean** any files the LLM created, then repeat for Exp 1 → 2 → 3.
+
+## Notes
+
+- Server / MCP / proxy must be running the **patched** code; `bash check_deps.sh` to check deps.
+- Re-run only the failed ("bucket A") exercises from `hexfix_test_plan.md`; skip §4a / §4b.
+- Keep **model + client identical** to the original run, or the comparison isn't clean.
