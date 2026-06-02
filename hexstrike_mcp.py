@@ -5782,6 +5782,113 @@ def setup_mcp_server(hexstrike_client: HexStrikeClient) -> FastMCP:
             logger.error(f"❌ Blind SQLi extraction failed")
         return result
 
+    # ============================================================================
+    # DISK IMAGE ANALYSIS (hexfix #9) — Sleuth Kit mmls/fls + interesting-file listing
+    # ============================================================================
+
+    @mcp.tool()
+    def disk_image_mount(image_file: str, offset: str = "", list_deleted: bool = True,
+                         additional_args: str = "") -> Dict[str, Any]:
+        """
+        Analyze a disk image with The Sleuth Kit (mmls + fls): dumps the partition table, recursively
+        lists files (including deleted), and surfaces flag/secret/key-looking entries. Use for disk-image
+        forensics instead of trying to mount the image by hand.
+
+        Args:
+            image_file: Path to the disk image (.dd/.img/.raw — decompress .gz first)
+            offset: Sector offset of the partition to read (from mmls output), optional
+            list_deleted: Include deleted entries (default: true)
+            additional_args: Extra args passed to fls
+
+        Returns:
+            partition_table, file_listing, notable_entries, total_entries
+        """
+        data = {"image_file": image_file, "offset": offset, "list_deleted": list_deleted,
+                "additional_args": additional_args}
+        logger.info(f"💽 Analyzing disk image: {image_file}")
+        return hexstrike_client.safe_post("api/tools/disk-image-mount", data)
+
+    # ============================================================================
+    # PCAP DECRYPTION (hexfix #9) — tshark with a key file
+    # ============================================================================
+
+    @mcp.tool()
+    def pcap_decrypt(pcap_file: str, key_file: str = "", key_type: str = "tls",
+                     display_filter: str = "", extract_fields: str = "",
+                     additional_args: str = "") -> Dict[str, Any]:
+        """
+        Decrypt/parse a PCAP with tshark using a key file. Auto-detects a key file sitting next to the
+        pcap if none is given. Use for encrypted-traffic forensics (e.g. TLS with an RSA key or keylog).
+
+        Args:
+            pcap_file: Path to the .pcap/.pcapng
+            key_file: Key file (TLS keylog, RSA private key, or WPA key). Auto-detected if empty.
+            key_type: 'tls' (keylog_file), 'rsa' (RSA private key), or 'wpa' (default: tls)
+            display_filter: tshark display filter, e.g. 'http' or 'tls.app_data'
+            extract_fields: comma-separated fields, e.g. 'http.file_data,http.host'
+            additional_args: Extra tshark args
+
+        Returns:
+            tshark output plus key_file_used / key_type
+        """
+        data = {"pcap_file": pcap_file, "key_file": key_file, "key_type": key_type,
+                "display_filter": display_filter, "extract_fields": extract_fields,
+                "additional_args": additional_args}
+        logger.info(f"🔓 Decrypting PCAP: {pcap_file}")
+        return hexstrike_client.safe_post("api/tools/pcap-decrypt", data)
+
+    # ============================================================================
+    # ROP CHAIN BUILDER (hexfix #7) — ready-to-use pwntools ROP chain from a binary
+    # ============================================================================
+
+    @mcp.tool()
+    def rop_chain_builder(binary: str, goal: str = "execve", win_addr: str = "",
+                          additional_args: str = "") -> Dict[str, Any]:
+        """
+        Build a ROP chain from a binary using ROPgadget and return ready-to-use pwntools code. For
+        binary exploitation, prefer this over hand-rolling ROP inside execute_python_script.
+
+        Args:
+            binary: Path to the target binary
+            goal: 'execve' (auto-build an execve('/bin/sh') chain) or 'ret2win'
+            win_addr: For goal='ret2win', the address/symbol to return to
+            additional_args: Extra args passed to ROPgadget
+
+        Returns:
+            ropchain_raw, gadgets (key gadget addresses), pwntools_template
+        """
+        data = {"binary": binary, "goal": goal, "win_addr": win_addr, "additional_args": additional_args}
+        logger.info(f"🔗 Building ROP chain for: {binary}")
+        return hexstrike_client.safe_post("api/tools/rop-chain-builder", data)
+
+    # ============================================================================
+    # XSS / CSRF CHAIN (hexfix #8) — inject payload, drive headless browser, capture effects
+    # ============================================================================
+
+    @mcp.tool()
+    def xss_csrf_chain(target_url: str, payload: str, inject_field: str = "",
+                       wait_time: int = 8, collaborator_url: str = "") -> Dict[str, Any]:
+        """
+        Inject an XSS/CSRF payload, drive a headless browser to trigger it, and capture client-side
+        effects (DOM, alerts, cookies, redirects). For XSS->bot exfiltration challenges, embed your own
+        listener URL in the payload and check that listener for the victim callback — this tool does not
+        receive external callbacks itself.
+
+        Args:
+            target_url: URL to load / where the form lives
+            payload: The XSS/CSRF payload to inject
+            inject_field: Name of the form field to inject into and submit (optional)
+            wait_time: Seconds to wait after injection for the bot/JS to fire (default: 8)
+            collaborator_url: Your external listener URL, for reference in the result (optional)
+
+        Returns:
+            payload_injected flag and a 'captured' object (final_url, title, cookies, alert_text, page_excerpt)
+        """
+        data = {"target_url": target_url, "payload": payload, "inject_field": inject_field,
+                "wait_time": wait_time, "collaborator_url": collaborator_url}
+        logger.info(f"🕸️ XSS/CSRF chain: {target_url}")
+        return hexstrike_client.safe_post("api/tools/xss-csrf-chain", data)
+
     return mcp
 
 def parse_args():

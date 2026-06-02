@@ -75,7 +75,17 @@ def main():
         return
 
     params_summary = _summarise_input(tool_input)
-    _logger.info(f"NATIVE TOOL | tool={tool_name} | params={params_summary}")
+
+    # hexfix #5: during Exp 2/3 (hexstrike-tools-only), any native tool call is a constraint
+    # violation. Flag it in the log when the active experiment can be detected via prompt_type.
+    prompt_type = str(config.get("prompt_type", "")).lower()
+    is_strict = "experiment" in prompt_type and ("2" in prompt_type or "3" in prompt_type)
+    if is_strict:
+        _logger.info(
+            f"NATIVE TOOL | tool={tool_name} | params={params_summary} | ⚠️ CONSTRAINT_VIOLATION ({prompt_type})"
+        )
+    else:
+        _logger.info(f"NATIVE TOOL | tool={tool_name} | params={params_summary}")
 
 
 if __name__ == "__main__":

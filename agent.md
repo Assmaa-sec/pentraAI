@@ -207,6 +207,10 @@ Used when connecting to a remote hexstrike server (non-local).
   - Exp 3: HexStrike tools only, strict adherence
 - **Configs tested:** Claude+ClaudeCode, DeepSeek+5ire, DeepSeek+RooCode, DeepSeek+Trae
 - **Results stored in:** `results/` directory (do NOT write to these files)
+- **Prompt generation:** `prompt_generator.py` — a standalone GUI (no server/import needed) that
+  builds each run's Prompt 2 (STEP 1 setup + STEP 2 task with the strategy preamble + per-category
+  tool nudges). Mirrors the `/api/ctf/get-experiment-prompt` endpoint. The `get_experiment_prompt`
+  MCP tool was removed — the human generates prompts with this app, the model does not.
 
 ---
 

@@ -8,3 +8,6 @@ im_scared/*
 hexstrike_config.json
 kubectl
 log-*
+.pyc
+__pycache__/
+hexstrike-env/

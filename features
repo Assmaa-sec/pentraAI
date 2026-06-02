@@ -241,6 +241,28 @@ HEXSTRIKE ADDED FEATURES
     Open results/README and add ✅ to the corresponding client/category cell.
 
 
+10. STANDALONE PROMPT GENERATOR
+   A small standalone GUI (no hexstrike import, no server needed) that builds the full experiment
+   prompt — STEP 1 setup + STEP 2 task, with the strategy preamble and per-category tool nudges baked
+   in. Use it instead of hand-writing Prompt 2 for each run.
+
+   File:
+   - prompt_generator.py : standalone Tk GUI (also has a --cli mode)
+
+   How to use:
+     python3 prompt_generator.py          # GUI (needs Tk: sudo apt install -y python3-tk)
+     python3 prompt_generator.py --cli    # terminal fallback, no GUI deps
+   Fill in model / client / experiment / name / category / difficulty / source-files / description,
+   press Generate, press Copy, then paste into the client as Prompt 2.
+
+   Notes:
+   - It MIRRORS the server logic in /api/ctf/get-experiment-prompt (hexfix #10). If you change the
+     prompt wording in one, change it in the other (there is a reminder comment at the top of the file).
+   - The get_experiment_prompt MCP tool was REMOVED — the model never needs to generate its own
+     prompt; the human does, via this app. The /api/ctf/get-experiment-prompt endpoint is KEPT (for
+     curl-based generation); only the MCP-tool wrapper was dropped.
+
+
 HEXSTRIKE SOURCE CODE FIXES
 ============================
 Based on hexfix.md failure analysis. Applied 2026-05-27.

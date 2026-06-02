@@ -52,6 +52,9 @@ _logger_stdout.addHandler(_sh)
 
 app = Flask(__name__)
 BACKEND_URL = "https://api.deepseek.com"
+# Upstream HTTP(S) proxy used to reach the backend (e.g. a local Clash/VPN proxy).
+# Default preserves the original hard-coded value; set to "" to disable proxying.
+UPSTREAM_PROXY = "http://127.0.0.1:7890"
 
 
 # ---------------------------------------------------------------------------
@@ -78,7 +81,10 @@ def _is_session_active(config: dict) -> bool:
 # ---------------------------------------------------------------------------
 
 def _log_tool_call(tool_name: str, tool_args: dict) -> None:
-    if tool_name.startswith("mcp--hexstrike--"):
+    # Skip HexStrike MCP tools regardless of how the client namespaces them
+    # (Claude uses "mcp__hexstrike-ai__"; other clients vary). They are logged
+    # MCP-side by hexstrike_mcp.py, so logging them here would double-count them.
+    if "hexstrike" in tool_name.lower():
         return
 
     config = _load_config()
@@ -169,13 +175,12 @@ def proxy(path: str):
             constraint_msg = {
                 "role": "system",
                 "content": (
-                    "CRITICAL CONSTRAINT: You MUST use ONLY tools prefixed with 'mcp--hexstrike--' or 'hexstrike:'. "
-                    "Do NOT use Bash, Read, Write, execute_command, or any native/built-in client tools. "
-                    "These native tools are disabled in this environment. "
-                    "For binary exploitation use mcp--hexstrike--pwntools_exploit. "
-                    "For Python scripts use mcp--hexstrike--execute_python_script. "
-                    "For HTTP requests use mcp--hexstrike--http_framework_test. "
-                    "If you need to run a shell command, use mcp--hexstrike--execute_command."
+                    "CRITICAL CONSTRAINT: Use ONLY the HexStrike MCP tools provided in this environment. "
+                    "Do NOT use Bash, Read, Write, or any native/built-in client tools — they are disabled here. "
+                    "For binary exploitation use pwntools_exploit. "
+                    "For Python scripts use execute_python_script. "
+                    "For HTTP requests use http_framework_test. "
+                    "To run a shell command use the HexStrike execute_command tool."
                 )
             }
             # Insert after existing system messages but before user messages
@@ -200,7 +205,7 @@ def proxy(path: str):
         data    = raw_body,
         stream  = is_streaming,
         timeout = 300,
-        proxies = {"https": "http://127.0.0.1:7890", "http": "http://127.0.0.1:7890"}
+        proxies = {"https": UPSTREAM_PROXY, "http": UPSTREAM_PROXY} if UPSTREAM_PROXY else None
     )
 
     excluded = {"transfer-encoding", "connection", "content-encoding", "content-length"}
@@ -257,10 +262,16 @@ def main():
         "--host", default="127.0.0.1",
         help="Host to bind to (default: 127.0.0.1)"
     )
+    parser.add_argument(
+        "--upstream-proxy", default="http://127.0.0.1:7890",
+        help="HTTP(S) proxy used to reach the backend, e.g. a local Clash/VPN "
+             "(default: http://127.0.0.1:7890; pass '' to disable)"
+    )
     args = parser.parse_args()
 
-    global BACKEND_URL
+    global BACKEND_URL, UPSTREAM_PROXY
     BACKEND_URL = args.backend.rstrip("/")
+    UPSTREAM_PROXY = args.upstream_proxy.strip()
 
     print(f"[hexstrike-proxy] Listening on http://{args.host}:{args.port}/v1")
     print(f"[hexstrike-proxy] Forwarding to {BACKEND_URL}")
