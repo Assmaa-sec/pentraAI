@@ -22,9 +22,11 @@ Each exercise file = the challenge description + per experiment:
 ## Notes
 
 - Server / MCP / proxy must be running the **patched** code; `bash check_deps.sh` to check deps.
-- Re-run only the failed ("bucket A") exercises from `hexfix_test_plan.md`; skip §4a / §4b.
+- Re-run only the failed ("bucket A") exercises from `hexfix_test_plan.md`.
 - Keep **model + client identical** to the original run, or the comparison isn't clean.
-
+- Many exercises are skipped throughout this rerun:
+   - All 10 exercises mentioned by `hexfix_test_plan.md`/§4b.
+   - The exercises mentioned in `hexfix_test_plan.md`/§4a are available in directory but they currently need to be skipped as no fix as been implemented yet.
 
 ## Prompts
 
