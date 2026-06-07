@@ -34,13 +34,6 @@ TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'The 
 ── TIMER_START ──
 NATIVE TOOL | tool=Read | params=file_path=/home/kali/hexstrike-ai-1/results/Claude/ClaudeCode/Crypto/E…
 NATIVE TOOL | tool=Edit | params=file_path=/home/kali/hexstrike-ai-1/results/Claude/ClaudeCode/Crypto/E… | old_string=Results:
-[Experiment 1]
-
-[Experiment 2]
-
-[Experiment 3] | new_string=Results:
-[Experiment 1]
-Cipher: A1Z26 (numbers map to alphab…
 NATIVE TOOL | tool=ToolSearch | params=query=select:mcp__hexstrike-ai__stop_timer | max_results=1
 ── TIMER_STOP ──
 2026-04-27 03:11:33,693 | ── END SESSION f80c6089 ── | total_time_spent=254.7s

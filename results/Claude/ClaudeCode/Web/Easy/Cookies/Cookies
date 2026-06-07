@@ -95,4 +95,4 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=# Try search endpoint to 
 HEXSTRIKE TOOL | tool=execute_command | params=command=for i in $(seq 0 30); do | use_cache=True
 ── TIMER_STOP ──
 2026-05-14 19:33:23,804 | ── END SESSION 9bad67c4 ── | total_time_spent=559.2s
-── TEST RESULT: [SUCCESSFUL] ─
+── TEST RESULT: [SUCCESSFUL] ──

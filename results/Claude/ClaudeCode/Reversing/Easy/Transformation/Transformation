@@ -53,7 +53,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=python3 << 'EOF' | use_ca
 ── TIMER_STOP ──
 2026-05-11 06:21:51,710 | ── END SESSION 8ef26699 ── | total_time_spent=18.9s
 ── TEST RESULT: [SUCCESSFUL] ──
-TOOL CALL | tool=set_ctf_metadata | source=hexstrike | params={'ctf_name': 'Transformation', 'ctf_difficulty': 'Easy', 'ctf_type': 'Reversing', 'prompt_type': 'success'}
 
 [Experiment 3]
 2026-05-11 19:34:36,804 | ── SESSION 5d290e58 ──

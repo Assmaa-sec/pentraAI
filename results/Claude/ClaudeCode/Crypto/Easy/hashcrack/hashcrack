@@ -54,7 +54,7 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=python3 -c " | use_cache=
 NATIVE TOOL | tool=ToolSearch | params=query=select:mcp__hexstrike-ai__stop_timer | max_results=1
 ── TIMER_STOP ──
 2026-04-26 21:44:46,439 | ── END SESSION 9c5da618 ── | total_time_spent=2365.0s
-── TEST RESULT: [SUCCESSFUL]
+── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 2]
 2026-04-26 21:06:03,286 | ── SESSION 2b9da500 ──

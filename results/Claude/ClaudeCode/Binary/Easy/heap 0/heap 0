@@ -38,7 +38,7 @@ NATIVE TOOL | tool=Read | params=file_path=/home/kali/hexstrike-ai-1/results/Cla
 HEXSTRIKE TOOL | tool=execute_command | params=command=printf '2\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n4\n' | … | use_cache=False
 ── TIMER_STOP ──
 2026-04-14 03:32:58,457 | ── END SESSION c5c11c22 ── | total_time_spent=19.1s
-── TEST RESULT: [SUCCESSFUL] 
+── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 2]
 2026-04-19 23:37:22,420 | ── SESSION aeb09724 ──

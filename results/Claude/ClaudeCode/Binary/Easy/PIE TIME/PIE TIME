@@ -40,7 +40,7 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=nm "/home/kali/hexstrike-
 HEXSTRIKE TOOL | tool=execute_command | params=command=python3 -c " | use_cache=False
 ── TIMER_STOP ──
 2026-04-14 03:36:06,614 | ── END SESSION cc66fc7f ── | total_time_spent=27.2s
-── TEST RESULT: [SUCCESSFUL] 
+── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 2]
 2026-04-14 03:57:19,744 | ── SESSION b3e9fb60 ──
