@@ -24,7 +24,6 @@ ssh to foggy-cliff.picoctf.net:[PORT], and run the binary named "bypassme.bin" o
 
 Results:
 [Experiment 1]
-
 2026-05-11 19:41:11,603 | ── SESSION 33b2901e ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -75,9 +74,7 @@ NATIVE TOOL | tool=Bash | params=command=objdump -d /tmp/bypassme.bin | awk '/^0
 2026-05-11 20:02:13,361 | ── END SESSION 33b2901e ── | total_time_spent=1261.1s
 ── TEST RESULT: [PARTIAL] ──
 
-
 [Experiment 2]
-
 2026-05-11 19:40:58,269 | ── SESSION 63c7f60b ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -115,7 +112,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=python3 -c " | use_cache=
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 3]
-
 2026-05-11 19:40:53,759 | ── SESSION 7e1cfe31 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

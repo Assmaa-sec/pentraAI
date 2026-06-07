@@ -48,7 +48,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=python3 << 'PYEOF' | use_
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 2]
-
 2026-04-23 20:07:01,250 | ── SESSION 9f1d8217 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -66,7 +65,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=python3 << 'EOF' | use_ca
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 3]
-
 2026-04-23 20:07:41,603 | ── SESSION 0122475c ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

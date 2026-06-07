@@ -25,7 +25,6 @@ The program is provided with the prompt.
 
 Results:
 [Experiment 1]
-
 2026-05-03 19:09:40,094 | ── SESSION 99e024a5 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -39,9 +38,7 @@ NATIVE TOOL | tool=Read | params=file_path=/home/kali/hexstrike-ai-1/results/Cla
 2026-05-03 19:24:53,382 | ── END SESSION 99e024a5 ── | total_time_spent=912.7s
 ── TEST RESULT: [FAILED] ──
 
-
 [Experiment 2]
-
 2026-05-03 19:10:19,483 | ── SESSION 9be11aaf ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -56,7 +53,6 @@ NATIVE TOOL | tool=Read | params=file_path=/home/kali/hexstrike-ai-1/results/Cla
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 3]
-
 2026-05-03 19:10:48,398 | ── SESSION 9e864a33 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

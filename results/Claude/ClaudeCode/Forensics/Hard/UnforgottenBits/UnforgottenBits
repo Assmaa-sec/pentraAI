@@ -24,7 +24,6 @@ Inspect the attached disk image and find the flag. Note: if you are using the we
 
 Results:
 [Experiment 1]
-
 2026-05-04 20:13:22,297 | ── SESSION a05761b6 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -92,9 +91,7 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=python3 << 'EOF' | use_ca
 2026-05-04 20:34:27,340 | ── END SESSION a05761b6 ── | total_time_spent=1264.4s
 ── TEST RESULT: [FAILED] ──
 
-
 [Experiment 2]
-
 2026-05-04 20:18:46,043 | ── SESSION 7b438429 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -167,7 +164,6 @@ NATIVE TOOL | tool=ToolSearch | params=query=select:mcp__hexstrike-ai__stop_time
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 3]
-
 2026-05-04 20:19:17,521 | ── SESSION ffaa3661 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

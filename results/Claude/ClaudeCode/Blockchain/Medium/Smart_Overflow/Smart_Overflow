@@ -29,7 +29,6 @@ NOTE: this server can take up to 5 minutes to start up. Please be patient.
 
 Results:
 [Experiment 1]
-
 2026-04-23 19:57:09,335 | ── SESSION e122ab0b ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -47,7 +46,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=python3 << 'PYEOF' | use_
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 2]
-
 2026-04-23 19:57:47,071 | ── SESSION ba549493 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -65,7 +63,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=python3 << 'EOF' | use_ca
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 3]
-
 2026-04-23 19:58:16,153 | ── SESSION 9e7f9321 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

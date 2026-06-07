@@ -41,9 +41,7 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=BINARY="/home/kali/hexstr
 2026-04-23 10:08:52,029 | ── END SESSION e19b7b8a ── | total_time_spent=20192.4s
 ── TEST RESULT: [FAILED] ──
 
-
 [Experiment 2]
-
 2026-04-23 04:33:36,578 | ── SESSION a144c1a0 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -68,7 +66,6 @@ NATIVE TOOL | tool=ToolSearch | params=query=select:mcp__hexstrike-ai__stop_time
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 3]
-
 2026-04-23 04:34:35,568 | ── SESSION 7b34217f ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

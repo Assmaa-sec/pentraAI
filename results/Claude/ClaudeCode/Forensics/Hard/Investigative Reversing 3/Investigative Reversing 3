@@ -24,7 +24,6 @@ Both are attached to the prompt.
 
 Results:
 [Experiment 1]
-
 2026-05-04 19:36:25,048 | ── SESSION 6d26014b ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -41,7 +40,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=python3 -c " | use_cache=
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 2]
-
 2026-05-04 19:36:56,917 | ── SESSION 72cc608c ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -59,9 +57,7 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=python3 -c " | use_cache=
 2026-05-04 19:39:22,780 | ── END SESSION 72cc608c ── | total_time_spent=144.9s
 ── TEST RESULT: [SUCCESSFUL] ──
 
-
 [Experiment 3]
-
 2026-05-04 19:37:33,983 | ── SESSION 86db79b7 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

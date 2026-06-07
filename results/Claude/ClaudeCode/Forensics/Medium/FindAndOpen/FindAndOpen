@@ -25,7 +25,6 @@ We attached a tracefile that might be good to analyze.
 
 Results:
 [Experiment 1]
-
 2026-05-04 19:04:47,640 | ── SESSION f10836a2 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -45,7 +44,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=cd /home/kali/hexstrike-a
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 2]
-
 2026-05-04 04:37:26,588 | ── SESSION ff52b62f ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -67,7 +65,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=cat "/home/kali/hexstrike
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 3]
-
 2026-05-04 19:06:25,522 | ── SESSION 26a9fe7b ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

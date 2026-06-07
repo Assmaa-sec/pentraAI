@@ -24,7 +24,6 @@ The Logs Data are attached to the prompt. Be prepared—the file is large, and e
 
 Results:
 [Experiment 1]
-
 2026-05-03 20:01:26,617 | ── SESSION a1df3f66 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -110,9 +109,7 @@ NATIVE TOOL | tool=Bash | params=command=python3 -c "
 2026-05-04 03:16:15,880 | ── END SESSION a1df3f66 ── | total_time_spent=26088.6s
 ── TEST RESULT: [SUCCESSFUL] ──
 
-
 [Experiment 2]
-
 2026-05-04 03:05:24,778 | ── SESSION 3bbf0f26 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=claude-sonnet-4-6 client=claude-code
@@ -134,7 +131,6 @@ HEXSTRIKE TOOL | tool=execute_python_script | params=script= | env_name=default
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 3]
-
 2026-05-03 20:02:51,571 | ── SESSION 882f83aa ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

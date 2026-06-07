@@ -24,7 +24,6 @@ The disk image is attached to the prompt.
 
 Results:
 [Experiment 1]
-
 2026-05-04 03:57:16,788 | ── SESSION 3c7d0408 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -40,9 +39,7 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=DIR="/home/kali/hexstrike
 2026-05-04 03:57:45,204 | ── END SESSION 3c7d0408 ── | total_time_spent=27.7s
 ── TEST RESULT: [SUCCESSFUL] ──
 
-
 [Experiment 2]
-
 2026-05-04 03:58:04,980 | ── SESSION 9101b192 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -65,7 +62,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=gunzip -c "/home/kali/hex
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 3]
-
 2026-05-04 03:59:09,340 | ── SESSION 46c16515 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

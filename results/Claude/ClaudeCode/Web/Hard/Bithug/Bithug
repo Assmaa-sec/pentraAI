@@ -24,7 +24,6 @@ http://wily-courier.picoctf.net:[PORT]
 
 Results:
 [Experiment 1]
-
 2026-05-18 05:29:00,038 | ── SESSION a67938e3 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -69,9 +68,7 @@ NATIVE TOOL | tool=ToolSearch | params=query=select:mcp__hexstrike-ai__stop_time
 2026-05-18 05:58:30,486 | ── END SESSION a67938e3 ── | total_time_spent=1769.5s
 ── TEST RESULT: [SUCCESSFUL] ──
 
-
 [Experiment 2]
-
 2026-05-18 05:28:50,353 | ── SESSION e9c204c2 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -115,7 +112,6 @@ NATIVE TOOL | tool=ToolSearch | params=query=select:mcp__hexstrike-ai__stop_time
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 3]
-
 2026-05-18 05:29:07,379 | ── SESSION ce8a4dae ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

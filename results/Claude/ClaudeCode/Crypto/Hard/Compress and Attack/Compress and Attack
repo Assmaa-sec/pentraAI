@@ -25,7 +25,6 @@ You will find the python script attached.
 
 Results:
 [Experiment 1]
-
 2026-04-28 20:20:21,090 | ── SESSION 85484ad3 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -74,7 +73,6 @@ NATIVE TOOL | tool=ToolSearch | params=query=select:mcp__hexstrike-ai__stop_time
 ── TEST RESULT: [PARTIAL] ──
 
 [Experiment 2]
-
 2026-04-28 20:21:44,053 | ── SESSION 070f7b1a ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -115,7 +113,6 @@ NATIVE TOOL | tool=ToolSearch | params=query=select:mcp__hexstrike-ai__stop_time
 ── TEST RESULT: [PARTIAL] ──
 
 [Experiment 3]
-
 2026-04-28 20:22:29,422 | ── SESSION 200f029a ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

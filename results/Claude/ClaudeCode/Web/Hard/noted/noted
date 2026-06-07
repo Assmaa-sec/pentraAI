@@ -27,7 +27,6 @@ Source code: noted.tar.gz
 
 Results:
 [Experiment 1]
-
 2026-05-18 19:44:56,819 | ── SESSION 51c4710e ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -81,9 +80,7 @@ NATIVE TOOL | tool=Bash | params=command=export PATH=/usr/local/sbin:/usr/local/
 2026-05-19 02:26:33,872 | ── END SESSION 51c4710e ── | total_time_spent=24091.0s
 ── TEST RESULT: [FAILED] ──
 
-
 [Experiment 2]
-
 2026-05-18 20:34:37,733 | ── SESSION 5a4dd848 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -114,9 +111,7 @@ NATIVE TOOL | tool=ToolSearch | params=query=select:mcp__hexstrike-ai__stop_time
 2026-05-19 02:26:17,695 | ── END SESSION 5a4dd848 ── | total_time_spent=21093.1s
 ── TEST RESULT: [FAILED] ──
 
-
 [Experiment 3]
-
 2026-05-18 19:44:14,561 | ── SESSION 89943345 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

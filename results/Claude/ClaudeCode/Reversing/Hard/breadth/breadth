@@ -57,7 +57,6 @@ NATIVE TOOL | tool=Bash | params=command=DIR="/home/kali/hexstrike-ai-1/results/
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 2]
-
 2026-05-13 18:32:45,704 | ── SESSION f1fc6dba ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

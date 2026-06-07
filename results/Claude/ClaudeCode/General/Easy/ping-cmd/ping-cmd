@@ -24,7 +24,6 @@ nc mysterious-sea.picoctf.net [PORT]
 
 Results:
 [Experiment 1]
-
 2026-05-06 23:57:14,885 | ── SESSION 7d2c668e ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -43,9 +42,7 @@ NATIVE TOOL | tool=ToolSearch | params=query=select:mcp__hexstrike-ai__stop_time
 2026-05-06 23:57:52,715 | ── END SESSION 7d2c668e ── | total_time_spent=36.9s
 ── TEST RESULT: [SUCCESSFUL] ──
 
-
 [Experiment 2]
-
 2026-05-06 23:51:01,864 | ── SESSION 612bfbb6 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -62,7 +59,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=echo "8.8.8.8; cat flag.t
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 3]
-
 2026-05-06 23:58:40,673 | ── SESSION 327f2d3e ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

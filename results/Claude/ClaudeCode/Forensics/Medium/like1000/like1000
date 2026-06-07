@@ -23,7 +23,6 @@ This .tar file got tarred a lot.
 
 Results:
 [Experiment 1]
-
 2026-05-04 19:08:42,664 | ── SESSION 991e7aca ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -42,7 +41,6 @@ NATIVE TOOL | tool=Read | params=file_path=/home/kali/hexstrike-ai-1/results/Cla
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 2]
-
 2026-05-04 19:09:13,446 | ── SESSION f2af489b ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -59,9 +57,7 @@ NATIVE TOOL | tool=Read | params=file_path=/home/kali/hexstrike-ai-1/results/Cla
 2026-05-04 19:09:52,158 | ── END SESSION f2af489b ── | total_time_spent=38.0s
 ── TEST RESULT: [SUCCESSFUL] ──
 
-
 [Experiment 3]
-
 2026-05-04 19:09:57,104 | ── SESSION c302ac1b ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

@@ -29,7 +29,6 @@ NOTE: this server can take up to 5 minutes to start up. Please be patient.
 
 Results:
 [Experiment 1]
-
 2026-04-23 20:11:57,505 | ── SESSION b003c1f3 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -72,7 +71,6 @@ NATIVE TOOL | tool=ToolSearch | params=query=select:mcp__hexstrike-ai__stop_time
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 2]
-
 2026-04-23 20:13:15,901 | ── SESSION 14941776 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -90,7 +88,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=python3 << 'EOF' | use_ca
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 3]
-
 2026-04-23 20:13:38,982 | ── SESSION 6c874f58 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

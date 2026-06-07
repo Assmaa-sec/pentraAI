@@ -23,7 +23,6 @@ A message has been encrypted using RSA. The public key is gone… but someone mi
 Two files are attached: an image and a flag.
 
 Results:
-
 [Experiment 1]
 2026-04-26 22:49:53,603 | ── SESSION b8297222 ──
 ── START SETUP ──
@@ -45,7 +44,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=DIR="/home/kali/hexstrike
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 2]
-
 2026-04-26 22:49:53,603 | ── SESSION b8297222 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -66,7 +64,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=DIR="/home/kali/hexstrike
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 3]
-
 2026-04-26 22:50:02,906 | ── SESSION e3e7541f ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

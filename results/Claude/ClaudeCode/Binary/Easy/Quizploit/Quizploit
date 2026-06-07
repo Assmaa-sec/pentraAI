@@ -25,7 +25,6 @@ Connect with the challenge instance here: nc lonely-island.picoctf.net [PORT]
 
 Results:
 [Experiment 1]
-
 2026-04-14 03:38:03,651 | ── SESSION 66ce7b90 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -54,7 +53,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=python3 << 'EOF' | use_ca
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 2]
-
 2026-04-14 04:00:34,465 | ── SESSION 6583c12e ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

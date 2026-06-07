@@ -24,7 +24,6 @@ Both the program and the message are attached to the prompt.
 
 Results:
 [Experiment 1]
-
 2026-04-30 19:49:15,267 | ── SESSION 05aa8e99 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -62,7 +61,6 @@ NATIVE TOOL | tool=ToolSearch | params=query=select:mcp__hexstrike-ai__stop_time
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 2]
-
 2026-04-30 19:49:28,019 | ── SESSION e8561866 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -103,9 +101,7 @@ NATIVE TOOL | tool=ToolSearch | params=query=select:mcp__hexstrike-ai__stop_time
 2026-05-01 00:27:15,524 | ── END SESSION e8561866 ── | total_time_spent=16667.0s
 ── TEST RESULT: [SUCCESSFUL] ──
 
-
 [Experiment 3]
-
 2026-04-30 19:49:50,083 | ── SESSION 0267d606 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

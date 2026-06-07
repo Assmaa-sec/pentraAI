@@ -24,7 +24,6 @@ Can you reverse the flag.
 
 Results:
 [Experiment 1]
-
 2026-05-13 19:28:18,306 | ── SESSION 42753f48 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -40,9 +39,7 @@ NATIVE TOOL | tool=Bash | params=command=DIR="/home/kali/hexstrike-ai-1/results/
 2026-05-13 20:03:11,390 | ── END SESSION 42753f48 ── | total_time_spent=2092.5s
 ── TEST RESULT: [SUCCESSFUL] ──
 
-
 [Experiment 2]
-
 2026-05-13 19:34:00,533 | ── SESSION 8e114717 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -61,7 +58,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=python3 -c " | use_cache=
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 3]
-
 2026-05-13 19:34:31,383 | ── SESSION 791d82dc ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

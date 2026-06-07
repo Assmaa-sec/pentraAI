@@ -29,7 +29,6 @@ Please test your exploits against a local instance using the included Docker Com
 
 Results:
 [Experiment 1]
-
 2026-05-19 07:23:05,456 | ── SESSION b9d48c02 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -112,9 +111,7 @@ NATIVE TOOL | tool=ToolSearch | params=query=select:mcp__hexstrike-ai__stop_time
 2026-05-19 08:24:20,222 | ── END SESSION b9d48c02 ── | total_time_spent=3673.8s
 ── TEST RESULT: [FAILED] ──
 
-
 [Experiment 2]
-
 2026-05-19 07:20:54,061 | ── SESSION b09cdeae ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -207,7 +204,6 @@ NATIVE TOOL | tool=ToolSearch | params=query=select:mcp__hexstrike-ai__stop_time
 ── TEST RESULT: [FAILED] ──
 
 [Experiment 3]
-
 2026-05-19 07:21:01,313 | ── SESSION 0d7d320b ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

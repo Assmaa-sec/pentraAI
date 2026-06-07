@@ -23,7 +23,6 @@ Convert the following string of ASCII numbers into a readable string: 0x70 0x69 
 
 Results:
 [Experiment 1]
-
 2026-05-07 00:43:21,198 | ── SESSION 08c9d3cc ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -38,7 +37,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=python3 -c "print(''.join
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 2]
-
 2026-05-07 00:43:41,475 | ── SESSION fdb30fd3 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -53,7 +51,6 @@ HEXSTRIKE TOOL | tool=execute_python_script | params=script= | env_name=default
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 3]
-
 2026-05-07 00:44:05,647 | ── SESSION 67b2996a ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

@@ -24,7 +24,6 @@ A file is attached to this prompt.
 
 Results:
 [Experiment 1]
-
 2026-05-13 18:58:17,551 | ── SESSION 1bf12eb2 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -54,7 +53,6 @@ NATIVE TOOL | tool=Bash | params=command=DIR="/home/kali/hexstrike-ai-1/results/
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 2]
-
 2026-05-13 18:58:44,778 | ── SESSION 220f57d9 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -79,7 +77,6 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=# The comparison is 64 by
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 3]
-
 2026-05-13 18:59:23,741 | ── SESSION 8060d0ee ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

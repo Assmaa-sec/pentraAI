@@ -27,7 +27,6 @@ You can inspect the program file and source code, both attached to the prompt.
 
 Results:
 [Experiment 1]
-
 2026-04-20 02:59:56,334 | ── SESSION 79029b08 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -43,9 +42,7 @@ HEXSTRIKE TOOL | tool=execute_command | params=command=python3 << 'EOF' | use_ca
 2026-04-20 03:06:00,212 | ── END SESSION 79029b08 ── | total_time_spent=362.2s
 ── TEST RESULT: [SUCCESSFUL] ──
 
-
 [Experiment 2]
-
 2026-04-20 20:39:06,716 | ── SESSION 18ba7c2c ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -62,7 +59,6 @@ HEXSTRIKE TOOL | tool=execute_python_script | params=script= | env_name=default
 ── TEST RESULT: [SUCCESSFUL] ──
 
 [Experiment 3]
-
 2026-04-20 21:03:27,502 | ── SESSION d41b04cc ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude

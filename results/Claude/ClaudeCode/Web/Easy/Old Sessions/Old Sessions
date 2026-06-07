@@ -27,7 +27,6 @@ http://dolphin-cove.picoctf.net:[PORT]/login
 
 Result:
 [Experiment 1]
-
 2026-05-14 19:45:46,856 | ── SESSION 366843bc ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
@@ -64,9 +63,7 @@ NATIVE TOOL | tool=Bash | params=command=BASE="http://dolphin-cove.picoctf.net:6
 2026-05-14 19:47:52,163 | ── END SESSION 366843bc ── | total_time_spent=122.0s
 ── TEST RESULT: [SUCCESSFUL] ──
 
-
 [Experiment 2]
-
 2026-05-14 19:45:40,494 | ── SESSION 10018253 ──
 ── START SETUP ──
 TOOL CALL | tool=set_llm_identity | source=hexstrike | params=model=sonnet-4.6 client=claude
