@@ -1,16 +1,13 @@
 # Results WITH Fixes
-
 Re-runs of the exercises that failed in `results/`, now with the hexfix fixes applied — a
 before/after comparison. Same folder layout as `results/`.
 
 Each exercise file = the challenge description + per experiment:
-
     [Experiment N]
     Previous results: ── TEST RESULT: [old] ──
     ── New log ──        ← paste the new session block here
 
 ## Pipeline (per exercise, per experiment)
-
 1. **Generate Prompt 2** with `prompt_generator.py` — fill in model / client / experiment /
    name / category / difficulty / source-files / description (from the file) → Generate → Copy.
 2. **Prep:** replace `[PORT]` (launch the instance if needed); attach any files the challenge needs.
@@ -20,16 +17,14 @@ Each exercise file = the challenge description + per experiment:
 5. **Clean** any files the LLM created, then repeat for Exp 1 → 2 → 3.
 
 ## Notes
-
 - Server / MCP / proxy must be running the **patched** code; `bash check_deps.sh` to check deps.
 - Re-run only the failed ("bucket A") exercises from `hexfix_test_plan.md`.
 - Keep **model + client identical** to the original run, or the comparison isn't clean.
 - Many exercises are skipped throughout this rerun:
-   - All 10 exercises mentioned by `hexfix_test_plan.md`/§4b.
-   - The exercises mentioned in `hexfix_test_plan.md`/§4a are available in directory but they currently need to be skipped as no fix as been implemented yet.
+   - All 10 exercises mentioned by `hexfix_test_plan.md`/§4.
+   - The exercises mentioned in `hexfix_test_plan.md`/§3 are available in directory but they currently need to be skipped as no fix as been implemented yet.
 
 ## Prompts
-
 The prompt differ for each exercise depending on the exercise information and category.
 Each prompt will start and end the same way, the only difference will be in the RULES part; some categories require more specific rules, some keep the generic format.
 
@@ -97,3 +92,33 @@ Description: {Description}
 
 # End
 If you need to create files or folders, do so ONLY in the current exercise directory. Do NOT touch the root or any other directory.
+
+## Test Progress
+DEEPSEEK
+  RooCode
+    [X] Binary
+    [X] Blockchain
+    [X] Crypto
+    [X] Forensics
+    [X] General
+    [X] Reversing
+    [X] Web
+
+  5ire
+    [X] Binary
+    [X] Blockchain
+    [X] Crypto
+    [X] Forensics
+    [X] General
+    [X] Reversing
+    [X] Web
+  
+CLAUDE
+  ClaudeCode
+    [ ] Binary
+    [ ] Blockchain
+    [ ] Crypto
+    [ ] Forensics
+    [ ] General
+    [ ] Reversing
+    [ ] Web
