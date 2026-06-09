@@ -76,4 +76,10 @@ Each wraps an external binary (install noted).
 
 ---
 
-**Totals:** ready ≈ 45 · capability tools = 11 + 7 new VM-verified · §2 built-pending = 0 · §3 = 0 · §4 out-of-reach = 10.
+**Totals:**
+First round of fixes = 45
+Second round of fixes - capability tools = 18
+Exercises to rerun = 63
+§2 built-pending = 0
+§3 need verification = 0
+§4 out-of-reach = 10.
