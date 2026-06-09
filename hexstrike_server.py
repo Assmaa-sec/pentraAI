@@ -16109,8 +16109,10 @@ def evtx_parser():
         # output cap (return_code -1, empty capture). Set full=true to dump everything.
         lib_dump = (
             "from Evtx.Evtx import Evtx\n"
-            f"p={evtx_file!r}; GREP={grep.lower()!r}; FULL={bool(full)!r}; LIM={max_records}\n"
-            "KW=['picoctf{','flag','ctf{','secret','password']\n"   # flag-relevant only; logon/process IDs via grep=
+            f"p={evtx_file!r}; FULL={bool(full)!r}; LIM={max_records}\n"
+            f"GTERMS=[t for t in {grep.lower()!r}.split('|') if t]\n"   # grep supports a|b|c (match ANY term)
+            "KW=['picoctf{','flag','ctf{','secret','password']\n"   # default (no grep): flag-relevant only
+            "CAP = 200 if (FULL or GTERMS) else 50\n"
             "n=0\n"
             "with Evtx(p) as _log:\n"
             "    for i,_rec in enumerate(_log.records()):\n"
@@ -16118,9 +16120,10 @@ def evtx_parser():
             "        try: x=_rec.xml()\n"
             "        except Exception: continue\n"
             "        xl=x.lower()\n"
-            "        if FULL or (GREP and GREP in xl) or any(k in xl for k in KW):\n"
+            "        hit = FULL or (GTERMS and any(t in xl for t in GTERMS)) or (not GTERMS and any(k in xl for k in KW))\n"
+            "        if hit:\n"
             "            print(x); n+=1\n"
-            "        if 'picoctf{' in xl or (not FULL and n>=50): break\n"
+            "        if 'picoctf{' in xl or n>=CAP: break\n"
         )
         rust_fmt = {"json": "-o jsonl", "jsonl": "-o jsonl", "xml": "-o xml"}.get(output_format, "-o xml")
         candidates = [("python-evtx-library", f"python3 -c {shlex.quote(lib_dump)}")]
@@ -16148,7 +16151,8 @@ def evtx_parser():
                    if any(kw in ln.lower() for kw in ["picoctf{", "flag", "ctf{", "secret", "password", "key"])]
         result["notable_entries"] = notable[:60]
         if grep:
-            result["grep_matches"] = [l for l in out.splitlines() if grep.lower() in l.lower()][:60]
+            _terms = [t for t in grep.lower().split("|") if t]   # grep supports a|b|c
+            result["grep_matches"] = [l for l in out.splitlines() if any(t in l.lower() for t in _terms)][:100]
 
         total = len(out.splitlines())
         result["total_lines"] = total
@@ -16245,53 +16249,96 @@ def rsa_factor():
 
 @app.route("/api/tools/compression-oracle", methods=["POST"])
 def compression_oracle():
-    """Generate a CRIME/BREACH compression-length side-channel harness for byte-by-byte secret recovery (hexfix §3 — Compress and Attack)"""
+    """Generate a CRIME/BREACH compression-length side-channel harness (hexfix §3 — Compress and Attack).
+
+    mode='tcp' = raw-socket CRIME (e.g. picoCTF 'Compress and Attack', a custom TCP protocol) — needs host+port.
+    mode='http' = BREACH — needs target_url. Returns a ready-to-run Python harness to adapt + run.
+    """
     try:
         params = request.json
-        target_url = params.get("target_url", "")
-        reflect_param = params.get("reflect_param", "q")
+        mode = params.get("mode", "tcp")            # tcp (raw-socket CRIME) or http (BREACH)
         known_prefix = params.get("known_prefix", "picoCTF{")
         charset = params.get("charset", "") or "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_}"
+        # http (BREACH) params
+        target_url = params.get("target_url", "")
+        reflect_param = params.get("reflect_param", "q")
         method = params.get("method", "GET").upper()
+        # tcp (CRIME) params
+        host = params.get("host", "")
+        port = params.get("port", "")
 
-        if not target_url:
-            return jsonify({"error": "target_url parameter is required"}), 400
+        if mode == "http":
+            if not target_url:
+                return jsonify({"error": "target_url is required for mode=http"}), 400
+            sender = (f"requests.get(URL, params={{PARAM: payload}})" if method == "GET"
+                      else f"requests.post(URL, data={{PARAM: payload}})")
+            tmpl = [
+                "#!/usr/bin/env python3",
+                "# BREACH (HTTP) byte-by-byte recovery — pick the guess that compresses smallest.",
+                "import requests",
+                f"URL = {target_url!r}",
+                f"PARAM = {reflect_param!r}",
+                f"KNOWN = {known_prefix!r}",
+                f"CHARSET = {charset!r}",
+                "def length(payload):",
+                f"    r = {sender}",
+                "    return len(r.content)",
+                "secret = KNOWN",
+                "while not secret.endswith('}'):",
+                "    best, best_len = None, 10**9",
+                "    for ch in CHARSET:",
+                "        guess = secret + ch",
+                "        l = length(guess + '~~' + guess)   # padding amplifies the compression signal",
+                "        if l < best_len:",
+                "            best_len, best = l, ch",
+                "    if best is None: break",
+                "    secret += best; print('recovered:', secret)",
+                "print('FLAG:', secret)",
+            ]
+            note = "BREACH/HTTP: needs the secret reflected in a gzip-compressed response; tune padding/CHARSET."
+        else:  # tcp / CRIME (default — matches 'Compress and Attack')
+            if not host or not port:
+                return jsonify({"error": "host and port are required for mode=tcp"}), 400
+            port_lit = int(port) if str(port).isdigit() else port
+            tmpl = [
+                "#!/usr/bin/env python3",
+                "# CRIME over raw TCP — recover the secret by minimizing the compressed-output length.",
+                "# ADAPT the send/recv block to the challenge protocol (what you send, how the length comes back).",
+                "import socket",
+                f"HOST, PORT = {host!r}, {port_lit!r}",
+                f"KNOWN = {known_prefix!r}",
+                f"CHARSET = {charset!r}",
+                "def comp_len(guess):",
+                "    s = socket.create_connection((HOST, PORT)); s.settimeout(5)",
+                "    try:",
+                "        # typical 'Compress and Attack' service: you send input, it zlib-compresses",
+                "        # (your_input + flag) and returns the ciphertext/length. Tune to the real protocol.",
+                "        s.sendall((guess + '\\n').encode())",
+                "        data = b''",
+                "        while True:",
+                "            chunk = s.recv(4096)",
+                "            if not chunk: break",
+                "            data += chunk",
+                "    finally:",
+                "        s.close()",
+                "    return len(data)   # or parse the integer length the service prints",
+                "secret = KNOWN",
+                "while not secret.endswith('}'):",
+                "    best, best_len = None, 10**9",
+                "    for ch in CHARSET:",
+                "        g = secret + ch",
+                "        l = comp_len(g + g)   # duplicating the guess amplifies the compression signal",
+                "        if l < best_len:",
+                "            best_len, best = l, ch",
+                "    if best is None: break",
+                "    secret += best; print('recovered:', secret)",
+                "print('FLAG:', secret)",
+            ]
+            note = ("CRIME/raw-TCP: connect to HOST:PORT, send your guess, compare the compressed-output length "
+                    "the service returns. ADAPT the send/recv block to the exact protocol.")
 
-        sender = (f"requests.get(URL, params={{PARAM: payload}})" if method == "GET"
-                  else f"requests.post(URL, data={{PARAM: payload}})")
-        tmpl = [
-            "#!/usr/bin/env python3",
-            "# CRIME/BREACH byte-by-byte recovery — pick the guess that compresses smallest.",
-            "import requests",
-            f"URL = {target_url!r}",
-            f"PARAM = {reflect_param!r}",
-            f"KNOWN = {known_prefix!r}",
-            f"CHARSET = {charset!r}",
-            "def length(payload):",
-            f"    r = {sender}",
-            "    return len(r.content)",
-            "secret = KNOWN",
-            "while not secret.endswith('}'):",
-            "    best, best_len = None, 10**9",
-            "    for ch in CHARSET:",
-            "        guess = secret + ch",
-            "        l = length(guess + '~~' + guess)   # padding amplifies the compression signal",
-            "        if l < best_len:",
-            "            best_len, best = l, ch",
-            "    if best is None:",
-            "        break",
-            "    secret += best",
-            "    print('recovered:', secret)",
-            "print('FLAG:', secret)",
-        ]
-        result = {
-            "success": True,
-            "target_url": target_url,
-            "harness": "\n".join(tmpl),
-            "note": ("Run via execute_python_script against the live oracle. BREACH needs the secret "
-                     "reflected in a gzip-compressed response; tune padding/CHARSET to the challenge."),
-        }
-        logger.info(f"🗜️ Compression-oracle harness generated for {target_url}")
+        result = {"success": True, "mode": mode, "harness": "\n".join(tmpl), "note": note}
+        logger.info(f"🗜️ Compression-oracle harness generated (mode={mode})")
         return jsonify(result)
     except Exception as e:
         logger.error(f"💥 Error in compression_oracle endpoint: {str(e)}")

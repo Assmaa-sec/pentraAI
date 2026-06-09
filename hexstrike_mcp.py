@@ -5933,22 +5933,25 @@ def setup_mcp_server(hexstrike_client: HexStrikeClient) -> FastMCP:
         return hexstrike_client.safe_post("api/tools/rsa-factor", data)
 
     @mcp.tool()
-    def compression_oracle(target_url: str, reflect_param: str = "q", known_prefix: str = "picoCTF{",
-                           charset: str = "", method: str = "GET") -> Dict[str, Any]:
+    def compression_oracle(mode: str = "tcp", host: str = "", port: str = "", known_prefix: str = "picoCTF{",
+                           charset: str = "", target_url: str = "", reflect_param: str = "q",
+                           method: str = "GET") -> Dict[str, Any]:
         """
-        Generate a CRIME/BREACH compression-length side-channel harness (byte-by-byte secret recovery)
-        for a target that reflects input into a compressed response. Returns a ready-to-run Python harness.
+        Generate a CRIME/BREACH compression-length side-channel harness (byte-by-byte secret recovery).
+        mode='tcp' = raw-socket CRIME (e.g. picoCTF 'Compress and Attack', a custom TCP protocol) — needs
+        host + port. mode='http' = BREACH — needs target_url. Returns a ready-to-run Python harness to
+        adapt and run via execute_python_script.
 
         Args:
-            target_url: The oracle URL
-            reflect_param: Request parameter that gets reflected (default: q)
-            known_prefix: Known flag prefix to seed recovery (default: picoCTF{)
-            charset: Candidate characters (default: flag-charset)
-            method: GET or POST
+            mode: 'tcp' (raw socket, default) or 'http' (BREACH)
+            host, port: target for mode=tcp
+            target_url, reflect_param, method: target for mode=http (GET/POST)
+            known_prefix: known flag prefix to seed recovery (default: picoCTF{)
+            charset: candidate characters
         """
-        data = {"target_url": target_url, "reflect_param": reflect_param, "known_prefix": known_prefix,
-                "charset": charset, "method": method}
-        logger.info(f"🗜️ Compression-oracle harness: {target_url}")
+        data = {"mode": mode, "host": host, "port": port, "known_prefix": known_prefix, "charset": charset,
+                "target_url": target_url, "reflect_param": reflect_param, "method": method}
+        logger.info(f"🗜️ Compression-oracle harness: mode={mode}")
         return hexstrike_client.safe_post("api/tools/compression-oracle", data)
 
     @mcp.tool()
