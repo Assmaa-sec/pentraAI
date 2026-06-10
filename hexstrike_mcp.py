@@ -5955,55 +5955,61 @@ def setup_mcp_server(hexstrike_client: HexStrikeClient) -> FastMCP:
         return hexstrike_client.safe_post("api/tools/compression-oracle", data)
 
     @mcp.tool()
-    def sqli_order_oracle(url: str, param: str, true_marker: str, method: str = "GET",
-                          template: str = "", query: str = "", compare: str = "", max_len: int = 64,
-                          data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def sqli_order_oracle(url: str, param: str, true_marker: str = "", true_status: int = 0,
+                          method: str = "GET", template: str = "", query: str = "", compare: str = "",
+                          max_len: int = 64, data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
-        Boolean-blind SQL injection extractor using ORDER BY / CASE WHEN — the variant
-        blind_sqli_extractor does not cover. Binary-searches each character. Use for ORDER BY injection.
+        Boolean-blind SQLi extractor (ORDER BY / CASE WHEN) — the in-response boolean variant that
+        blind_sqli_extractor misses. Binary-searches each character.
+        SCOPE: the TRUE/FALSE signal must be IN the HTTP response (marker substring or status code). NOT for
+        UNION-based, second-order (stored, fired later), or out-of-band output (CSV download) — use sqlmap for those.
 
         Args:
             url: Target URL
             param: Injectable parameter name
-            true_marker: A substring that appears ONLY on TRUE responses
+            true_marker: substring that appears ONLY on TRUE responses (or use true_status)
+            true_status: HTTP status code that indicates TRUE (alternative to true_marker)
             method: GET or POST
-            template: Injection template containing {cond} (has a sensible default)
+            template: Injection template containing {cond} (sensible default)
             query: SQL expression to extract, containing {pos} (defaults to a flags-table read)
+            compare: per-DB comparison, e.g. 'ascii({expr})>{val}' (MySQL) / 'unicode({expr})>{val}' (SQLite)
             max_len: Max characters to extract
             data: Other request fields (dict)
         """
-        payload = {"url": url, "param": param, "true_marker": true_marker, "method": method,
-                   "template": template, "query": query, "compare": compare, "max_len": max_len,
-                   "data": data or {}}
+        payload = {"url": url, "param": param, "true_marker": true_marker, "true_status": true_status,
+                   "method": method, "template": template, "query": query, "compare": compare,
+                   "max_len": max_len, "data": data or {}}
         logger.info(f"🧪 ORDER BY blind SQLi: {url}")
         return hexstrike_client.safe_post("api/tools/sqli-order-oracle", payload)
 
     @mcp.tool()
-    def timing_oracle(mode: str = "http", url: str = "", param: str = "pin", method: str = "POST",
-                      command_template: str = "", charset: str = "0123456789", known_prefix: str = "",
-                      max_len: int = 8, samples: int = 5,
+    def timing_oracle(mode: str = "http", metric: str = "time", url: str = "", param: str = "pin",
+                      method: str = "POST", command_template: str = "", charset: str = "0123456789",
+                      known_prefix: str = "", max_len: int = 8, samples: int = 25,
                       data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
-        Timing side-channel harness: recover a secret char-by-char by measuring response time (classic
-        early-abort string-compare leak). Picks the slowest candidate per position.
+        Timing / instruction-count side-channel harness: recover a secret char-by-char. Picks the
+        highest-signal candidate per position (more matching prefix -> longer compare / more instructions).
 
         Args:
-            mode: 'http' (time a request) or 'command' (time a shell command with {guess})
+            mode: 'http' (time a request) or 'command' (run a shell command with {guess})
+            metric: 'time' (perf_counter wall-clock + warmup + min-of-samples) or 'instructions'
+                    (perf stat -e instructions:u on the command — deterministic, best for local-binary leaks)
             url: Target URL (mode=http)
             param: Parameter holding the guess (mode=http)
             method: GET or POST (mode=http)
-            command_template: Shell command containing {guess} (mode=command)
+            command_template: Shell command with {guess} (mode=command; required for metric=instructions)
             charset: Candidate characters (default: digits)
             known_prefix: Already-known prefix of the secret
             max_len: Max characters to recover
-            samples: Measurements per candidate (raise on noisy targets)
+            samples: Measurements per candidate (raise to 50-100 on noisy timing targets)
             data: Other request fields (dict)
         """
-        payload = {"mode": mode, "url": url, "param": param, "method": method,
+        payload = {"mode": mode, "metric": metric, "url": url, "param": param, "method": method,
                    "command_template": command_template, "charset": charset,
                    "known_prefix": known_prefix, "max_len": max_len, "samples": samples,
                    "data": data or {}}
-        logger.info(f"⏱️ Timing-oracle ({mode})")
+        logger.info(f"⏱️ Timing-oracle ({mode}/{metric})")
         return hexstrike_client.safe_post("api/tools/timing-oracle", payload)
 
     @mcp.tool()
@@ -6011,17 +6017,21 @@ def setup_mcp_server(hexstrike_client: HexStrikeClient) -> FastMCP:
                         username: str = "", password: str = "", port: str = "",
                         additional_args: str = "") -> Dict[str, Any]:
         """
-        Enumerate/attack SMB shares and IPP/CUPS print services (Printer Shares challenges). Uses
-        netexec/crackmapexec/smbclient for SMB and ipptool/nmap for IPP.
+        Enumerate AND loot SMB shares + IPP/CUPS print services (Printer Shares challenges). One call:
+        lists shares (smbclient -L, reliable with null/guest), then auto-descends every readable Disk
+        share and READS the small files inside (returns contents in `smb_loot[share]["files"]`, not just
+        names) — the flag is usually a file *inside* a share. Any flag-looking string found is surfaced in
+        `flag_candidates`; `success` is true only when real file content/a flag was retrieved. IPP path
+        uses ipptool/nmap. Leave `share` blank to loot all discovered shares; set it to target just one.
 
         Args:
             target: Host/IP
             service: smb, ipp, or auto
-            action: enum, shares, get, attributes
-            share: SMB share name (for action=get)
-            username: Username (blank = anonymous)
+            action: default auto-loots; pass "list" to only list shares (no file reads)
+            share: limit looting to one share name (blank = all discovered Disk shares)
+            username: Username (blank = anonymous/null session)
             password: Password
-            port: Service port (default 631 for IPP)
+            port: Service port (SMB non-standard port, or IPP; default 631 for IPP)
             additional_args: Extra args
         """
         data = {"target": target, "service": service, "action": action, "share": share,
