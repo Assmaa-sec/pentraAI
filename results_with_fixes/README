@@ -119,8 +119,8 @@ CLAUDE
   ClaudeCode
     [ ] Binary
     [ ] Blockchain
-    [ ] Crypto
-    [ ] Forensics
+    [X] Crypto
+    [X] Forensics
     [ ] General
-    [ ] Reversing
+    [X] Reversing
     [ ] Web
