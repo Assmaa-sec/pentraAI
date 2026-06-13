@@ -115,8 +115,8 @@ DEEPSEEK
     [X] Web
   
 CLAUDE
-  ClaudeCode
-    [ ] Binary
+  SONNET 4.6
+    [X] Binary
     [X] Crypto
     [X] Forensics
     [X] General

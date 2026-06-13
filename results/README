@@ -7,7 +7,7 @@
 ## Configurations
 | LLM      | Client     |
 |----------|------------|
-| Claude   | ClaudeCode |
+| Claude   | Sonnet4.6  |
 | DeepSeek | 5ire       |
 | DeepSeek | RooCode    |
 
@@ -19,7 +19,7 @@ LLM/
             └── Exercise/
                 └── Files/
 
-Example: `Claude/ClaudeCode/Web/Easy/Cookies/Files/`
+Example: `Claude/Sonnet4.6/Web/Easy/Cookies/Files/`
 
 ## Prompt structure
 Each exercise file contains two prompts sent in order:
@@ -61,7 +61,7 @@ DEEPSEEK
     [X] Web
   
 CLAUDE
-  ClaudeCode
+  Sonnet4.6
     [X] Binary
     [X] Blockchain
     [X] Crypto
