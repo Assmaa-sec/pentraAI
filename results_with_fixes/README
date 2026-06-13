@@ -108,7 +108,6 @@ DEEPSEEK
 
   5ire
     [X] Binary
-    [X] Blockchain
     [X] Crypto
     [X] Forensics
     [X] General
@@ -118,9 +117,8 @@ DEEPSEEK
 CLAUDE
   ClaudeCode
     [ ] Binary
-    [ ] Blockchain
     [X] Crypto
     [X] Forensics
-    [ ] General
+    [X] General
     [X] Reversing
-    [ ] Web
+    [X] Web
