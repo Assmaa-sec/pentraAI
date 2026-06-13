@@ -16,13 +16,13 @@ SCOPE
 
 Config                  | Total | Successful | Failed | Partial | Rate
 ------------------------|-------|------------|--------|---------|-------
-Claude / ClaudeCode     |   258 |        203 |     39 |      16 | 78.7%
+Claude / Sonnet4.6      |   258 |        203 |     39 |      16 | 78.7%
 Deepseek / RooCode      |   258 |        154 |     95 |       9 | 59.7%
 Deepseek / 5ire         |   258 |         72 |    172 |      14 | 27.9%
 ------------------------|-------|------------|--------|---------|-------
 TOTAL                   |   774 |        429 |    306 |      39 | 55.4%
 
-Claude/ClaudeCode is 2.8x more effective than Deepseek/5ire.
+Claude/Sonnet4.6 is 2.8x more effective than Deepseek/5ire.
 Same Deepseek model on RooCode vs 5ire: 59.7% vs 27.9%: the client alone
 accounts for a 2.1x gap.
 
@@ -90,7 +90,7 @@ Hardest combinations:
 6. PER-CATEGORY PER-DIFFICULTY RAW COUNTS
 ================================================================================
 
---- CLAUDE / CLAUDECODE ---
+--- CLAUDE / SONNET4.6 ---
 Binary/Easy:       S=12  F=0   P=0   Total=12
 Binary/Medium:     S=15  F=0   P=0   Total=15
 Binary/Hard:       S=5   F=6   P=4   Total=15
@@ -316,17 +316,17 @@ Claude improves from Exp1 (76.7%) → Exp3 (82.6%), suggesting it adapts well
 to constraint-based solving.
 
 ================================================================================
-11. POST-FIX RE-EVALUATION (placeholders — TO FILL from results_with_fixes/ after the re-runs)
+11. POST-FIX RE-EVALUATION (all 3 configs re-run; every number from results_with_fixes/)
 ================================================================================
 
-[Empty scaffolding only. Do NOT fill from memory or projection — derive every number from the recorded
- results_with_fixes/ logs once the re-runs exist. Same rule as §1-§8: the manual TEST RESULT verdict is
- the only success signal.]
+[All numbers derived from the recorded results_with_fixes/ logs — no projection. Same rule as §1-§8:
+ the manual TEST RESULT verdict is the only success signal. Re-runs cover bucket A (previously-failed
+ trials) for all three configs; 5ire 158, RooCode 84, Claude 47.]
 
 11.1 Solve-rate delta per config (before vs after)
 --------------------------------------------------
 Each config runs the full 86x3 = 258-trial set. Only previously-failed ("bucket A") trials were
-re-run; every re-run trial's prior verdict was non-success, so each new SUCCESS is a genuine flip.
+re-run; every re-run trial's prior verdict was non-success, so each new SUCCESS is a flip.
 "Before" = the recorded baseline (section-2 table, lines for Deepseek/RooCode & 5ire); "after" folds
 the re-run flips back into the 258-set. New verdict = the bare "-- TEST RESULT: [...] --" line in
 results_with_fixes/ (the "Previous results:" line is the old one).
@@ -335,78 +335,75 @@ Config              | Before          | After           | Delta    | Re-run batc
 --------------------+-----------------+-----------------+----------+--------------------------
 Deepseek / 5ire     | 72/258  (27.9%) | 128/258 (49.6%) | +21.7 pp | 56 S / 91 F / 11 P  (158)
 Deepseek / RooCode  | 154/258 (59.7%) | 197/258 (76.4%) | +16.7 pp | 43 S / 16 F / 25 P  (84)
-Claude / ClaudeCode | 203/258 (78.7%) | -- not re-run -- |    --    | (Claude/ClaudeCode empty)
+Claude / Sonnet4.6  | 203/258 (78.7%) | 232/258 (89.9%) | +11.2 pp | 29 S / 16 F /  2 P  (47)
 
 - 5ire nearly doubles its global solve rate (+21.7pp); all 56 re-run successes are flips.
 - RooCode gains +16.7pp off a higher base; its re-run batch carries 25 PARTIALs (vs 5ire's 11),
   mostly Web (see 11.2).
-- Claude/ClaudeCode is NOT part of this re-run round (Test Progress in results_with_fixes/README:
-  every ClaudeCode category unchecked). Its 78.7% baseline is unchanged.
-- Ceiling (NOT 100%): 10 of the 86 challenges are out of reach for any tooling (§4 — 2 externally
-  impossible, 6 reasoning-bound, 2 huge-effort one-offs not built), so the maximum achievable solve
-  rate is 76/86 = 88.4% per config (228/258 trials). Read every post-fix rate against this ceiling.
+- Claude/Sonnet4.6: 78.7% -> 89.9% (+11.2pp); 29 of its 47 re-run trials now pass. Bucket A was 55
+  trials; the 8 not re-run are §4 out-of-reach failures (incl. SRA, Secure Dot Product) it could not
+  solve in the baseline either.
 
 11.2 Solve-rate delta per category (re-run population)
 ------------------------------------------------------
 Where the gains landed. Flips = previously-failed trials that now solve (= new SUCCESS). T = re-run
 trials in that category, NOT the full 258-set. Counted from results_with_fixes/ verdict lines.
 
-COMBINED (5ire + RooCode -- 242 re-run trials)
+COMBINED (all 3 configs -- 289 re-run trials)
 Category    | Flips / T | new S / F / P
 ------------+-----------+--------------
-Binary      | 23 / 53   | 23 / 25 /  5
-Forensics   | 21 / 52   | 21 / 26 /  5
-General     | 19 / 38   | 19 / 17 /  2
-Crypto      | 13 / 25   | 13 /  9 /  3
-Web         | 13 / 53   | 13 / 22 / 18
-Reversing   |  8 / 15   |  8 /  5 /  2
+Binary      | 27 / 63   | 27 / 31 /  5
+Forensics   | 24 / 58   | 24 / 27 /  7
+General     | 27 / 46   | 27 / 17 /  2
+Crypto      | 16 / 28   | 16 /  9 /  3
+Web         | 23 / 72   | 23 / 31 / 18
+Reversing   |  9 / 16   |  9 /  5 /  2
 Blockchain  |  2 /  6   |  2 /  3 /  1
 
 Per config (flips / re-run T)
-Category    | 5ire    | RooCode
-------------+---------+-----------------------------------
-Binary      | 12 / 31 | 11 / 22
-Forensics   | 13 / 38 |  8 / 14
-General     |  8 / 24 | 11 / 14
-Crypto      |  6 / 17 |  7 /  8
-Web         |  9 / 29 |  4 / 24
-Reversing   |  6 / 13 |  2 /  2
-Blockchain  |  2 /  6 |  -- (no Blockchain trials in RooCode's bucket A)
+Category    | 5ire    | RooCode | Claude
+------------+---------+---------+----------------------------
+Binary      | 12 / 31 | 11 / 22 |  4 / 10
+Forensics   | 13 / 38 |  8 / 14 |  3 /  6
+General     |  8 / 24 | 11 / 14 |  8 /  8
+Crypto      |  6 / 17 |  7 /  8 |  3 /  3
+Web         |  9 / 29 |  4 / 24 | 10 / 19
+Reversing   |  6 / 13 |  2 /  2 |  1 /  1
+Blockchain  |  2 /  6 |  --     |  -- (no Blockchain in RooCode/Claude bucket A)
 
-- Binary + Forensics = 44 of 99 flips -- the largest recoveries (pwntools/rop steering; foremost/
-  volatility/evtx/disk tooling).
-- Web is the most stuck: lowest flip ratio (13/53 = 25%) and holds 18 of the 36 combined PARTIALs
-  (16 of them RooCode) -- partial extraction, no verified flag.
-- Blockchain barely moved (2/6), only in 5ire; RooCode had no Blockchain trials in bucket A.
+- Binary, General, and Forensics lead (27, 27, 24 of 128 flips). General climbs once Claude folds in
+  -- Claude solved all 8 of its General re-runs, including Printer Shares 2.
+- Web has the lowest flip ratio (23/72 = 31.9%) and holds 18 of the 38 combined PARTIALs -- the
+  remaining web failures are multi-step / stateful, not single-tool.
+- Blockchain moved least (2/6, 5ire only); neither RooCode nor Claude had Blockchain in bucket A.
 
 11.3 Solve-rate delta per difficulty (re-run population)
 --------------------------------------------------------
-COMBINED (5ire + RooCode)
+COMBINED (all 3 configs)
 Difficulty | Flips / T | new S / F / P  | flip-rate
 -----------+-----------+----------------+----------
-Easy       | 41 / 55   | 41 / 13 /  1   | 74.5%
-Medium     | 46 / 97   | 46 / 36 / 15   | 47.4%
-Hard       | 12 / 90   | 12 / 58 / 20   | 13.3%
+Easy       | 45 / 59   | 45 / 13 /  1   | 76.3%
+Medium     | 60 / 111  | 60 / 36 / 15   | 54.1%
+Hard       | 23 / 119  | 23 / 74 / 22   | 19.3%
 
 Per config (flips / re-run T)
-Difficulty | 5ire    | RooCode
------------+---------+--------
-Easy       | 24 / 37 | 17 / 18
-Medium     | 28 / 70 | 18 / 27
-Hard       |  4 / 51 |  8 / 39
+Difficulty | 5ire    | RooCode | Claude
+-----------+---------+---------+--------
+Easy       | 24 / 37 | 17 / 18 |  4 /  4
+Medium     | 28 / 70 | 18 / 27 | 14 / 14
+Hard       |  4 / 51 |  8 / 39 | 11 / 29
 
-- Monotonic gradient: ~3 of 4 Easy recovered, ~half of Medium, ~1 in 8 Hard. Matches section 4
-  (out-of-reach) plus the capability-present-but-reasoning/signal-bound tools (timing_oracle, the
-  SMB write-pivot) clustering at Hard.
-- Easy + Medium = 87 of 99 flips (87.9%); post-fix gains are overwhelmingly Easy/Medium.
-- 5ire Hard is the weakest cell (4/51 = 7.8%); RooCode Hard does better (8/39 = 20.5%), including
-  the Printer Shares 3 flips.
+- Monotonic gradient holds: Easy 76.3%, Medium 54.1%, Hard 19.3% (~1 in 5 Hard). Hard flips rise to 23
+  once Claude is folded in -- Claude alone contributes 11.
+- Easy + Medium = 105 of 128 flips (82.0%); gains stay concentrated below Hard.
+- Hard recovery scales with config strength: 5ire 4/51 (7.8%), RooCode 8/39 (20.5%), Claude 11/29
+  (37.9%). Claude flips two Hard challenges with NO tool (tic-tac, Bithug) -- reasoning, not tooling.
   
 11.4 Per-experiment (Exp 1 / 2 / 3) delta
 -----------------------------------------
 Before = recorded per-experiment baseline (section-3 table, 86 exercises per experiment). After =
 before + flips recorded in that experiment's re-run logs (flips counted per [Experiment N] block in
-results_with_fixes/). Totals reconcile to 11.1 (5ire 128, RooCode 197).
+results_with_fixes/). Totals reconcile to 11.1 (5ire 128, RooCode 197, Claude 232).
 
 5ire                | Exp 1 (Free)   | Exp 2 (Ranked) | Exp 3 (Strict)
 --------------------+----------------+-------------------+----------------
@@ -422,52 +419,62 @@ flips               | +15            | +14            | +14
 after               | 66/86 (76.7%)  | 65/86 (75.6%)  | 66/86 (76.7%)
 delta               | +17.4 pp       | +16.3 pp       | +16.2 pp
 
+Claude              | Exp 1 (Free)   | Exp 2 (Ranked) | Exp 3 (Strict)
+--------------------+----------------+----------------+----------------
+before              | 66/86 (76.7%)  | 66/86 (76.7%)  | 71/86 (82.6%)
+flips               | +11            | +12            | +6
+after               | 77/86 (89.5%)  | 78/86 (90.7%)  | 77/86 (89.5%)
+delta               | +12.8 pp       | +14.0 pp       | +6.9 pp
+
 - 5ire's gain scales with constraint strictness: +12.8 (Free) < +20.9 (Ranked) < +31.4 (Strict).
   Exp 3 -- where native tools are banned -- leaps 33.7% -> 65.1%, from 5ire's near-worst variant to
   its best. The new hexstrike capability tools matter most exactly when the model cannot fall back
   to native tooling. (Exp 2 was 5ire's rock bottom at 19.8%; now 40.7%, still its weakest variant.)
 - RooCode moves uniformly (~+16-17pp every variant) -- consistent with its "stable across variants"
   profile; the fixes lift its floor without changing its flat shape.
+- Claude converges to ~90% across all three variants (89.5 / 90.7 / 89.5); biggest gain Exp 2 (+14.0),
+  smallest Exp 3 (+6.9, off an already-high 82.6% base).
 
 11.5 Tools that unlocked previously-failed exercises
 ----------------------------------------------------
-Attribution from each flipped block's new-log tool calls (results_with_fixes/). 99 total flips:
-40 used a capability tool (13 via the 7 new §3 tools, 27 via first-round capability tools), 59 used
-none. Notably, ALL 12 Hard flips used a capability tool -- the global modifiers alone recovered only
-Easy/Medium.
+Attribution from each flipped block's new-log tool calls (results_with_fixes/). 128 total flips:
+49 used a capability tool (20 via the 7 new §3 tools, 29 via first-round capability tools), 79 used
+none. 20 of the 23 Hard flips used a capability tool; the 3 exceptions are Claude solving tic-tac
+(Binary/Hard) and Bithug (Web/Hard) by reasoning -- a strong config can flip a Hard challenge without
+a dedicated tool, weaker configs cannot.
 
 (a) §3 capability tools (built this session) -> flips
 Tool                | Target exercise (cat/diff)        | Flipped | Where
 --------------------+-----------------------------------+---------+-------------------------
-rsa_factor          | Very Smooth (Crypto/Hard)         | yes     | 5ire Exp2
-compression_oracle  | Compress and Attack (Crypto/Hard) | yes     | RooCode Exp2,3
+rsa_factor          | Very Smooth, ClusterRSA (Crypto)  | yes     | 5ire Exp2; Claude Exp3 (ClusterRSA)
+compression_oracle  | Compress and Attack (Crypto/Hard) | yes     | RooCode Exp2,3; Claude Exp1,2
 evtx_parser         | Event-Viewing (Forensics/Med)     | yes     | 5ire Exp3; RooCode Exp1,2
 sqli_order_oracle   | ORDER ORDER (Web/Hard)            | yes     | 5ire Exp3; RooCode Exp1
 blockchain_exploit  | Access_Control, Smart_Overflow    | yes     | 5ire Exp3 / Exp2
                     |   (Blockchain/Med)                |         |
-smb_ipp_exploit     | Printer Shares 3 (General/Hard)   | yes     | RooCode Exp1,2,3
-  => 13 trial-flips across 7 exercises, all at Hard/Medium where the capability gap was absolute;
-     the strategy preamble alone could not have produced them.
+smb_ipp_exploit     | Printer Shares 2 & 3 (Gen/Hard)   | yes     | RooCode PS3 Exp1-3; Claude PS2 Exp1-3, PS3 Exp1
+  => 20 trial-flips across 9 exercises. Claude solved Printer Shares 2 (3/3) with smb_ipp_exploit --
+     the exercise 5ire/RooCode could not land; the limit there was config reasoning, not the tool.
 
 (b) §3 tools invoked but did NOT flip (capability delivered, solve still bound) -- honest record
   timing_oracle       SideChannel (Forensics/Hard)      0 / 5 blocks   signal-bound (ns leak vs VM noise)
-  smb_ipp_exploit     Printer Shares 2 (General/Hard)   0 / 5 blocks   private flag -> needs write/cron pivot
-  smb_ipp_exploit     Printer Shares 3, 5ire only       0 / 2 blocks   (RooCode solved it; 5ire did not)
+  smb_ipp_exploit     Printer Shares 2 (5ire/RooCode)   0 / 5 blocks   write-pivot for the weak configs -- but Claude solved it 3/3, see (a)
+  smb_ipp_exploit     Printer Shares 3, 5ire only       0 / 2 blocks   (RooCode + Claude solved PS3; 5ire did not)
   blockchain_exploit  Reentrance (Blockchain/Hard)      0 flips (max PARTIAL)  multi-tx reentrancy setup
   (these recorded runs PREDATE the smb auto-loot fix; they reflect the read-only tool.)
 
-(c) First-round capability tools -> flips (27 trial-flips)
-  pwntools_exploit    23 flips -- the single biggest tool lever; almost all Binary (PIE TIME, heap 0,
+(c) First-round capability tools -> flips (29 trial-flips)
+  pwntools_exploit    25 flips -- the single biggest tool lever; almost all Binary (PIE TIME, heap 0,
                       Echo Escape 1, Input Injection 2, format string 3, hash-only-1, offset-cycle,
-                      Quizploit, handoff) + Flag Hunters (Reversing/Easy)
+                      Quizploit, handoff incl. Claude) + Flag Hunters (Reversing/Easy)
   rop_chain_builder   high frequency troubles (Binary/Hard) -- alongside pwntools
   pcap_decrypt        WebNet1 (Forensics/Hard) -- 5ire Exp3
   disk_image_mount    DISKO 3 (Forensics/Med) -- 5ire Exp3
   blind_sqli_extractor No FA, Sql Map1 (Web/Med)
 
-(d) Flips with NO tracked capability tool (59) -> global modifiers + first-round default fixes.
-    All Easy (33) or Medium (26); zero Hard. By category: Forensics 16, General 16, Crypto 10, Web 9,
-    Reversing 7, Binary 1. Attributable to the strategy preamble (#10), decompose_challenge (#4) and
+(d) Flips with NO tracked capability tool (79) -> global modifiers + first-round default fixes.
+    Mostly Easy (37) / Medium (39), plus 3 Hard now (Claude's tic-tac, Bithug). By category: General 20,
+    Forensics 19, Web 19, Crypto 10, Reversing 8, Binary 3. Attributable to the strategy preamble (#10), decompose_challenge (#4) and
     execute_python_script validation (#1), plus the first-round non-capability fixes
     (http_framework_test sessions #6, foremost #9a, volatility #9b, nmap defaults #11). These cannot
     be pinned to one tool from the logs -- they are "better default behaviour" gains, not new capability.
@@ -475,28 +482,27 @@ smb_ipp_exploit     | Printer Shares 3 (General/Hard)   | yes     | RooCode Exp1
 11.6 §8 universal-failures (the 9/9 set) now addressed
 ------------------------------------------------------
 The §8 "9/9" set = the 9 challenges that failed every config x every experiment in the baseline.
-Re-run outcome (5ire / RooCode; Claude PENDING):
+Re-run outcome (5ire / RooCode / Claude):
 
-Exercise                | Cat/Diff       | 5ire / RooCode re-run         | Status (5ire+RooCode)
-------------------------+----------------+-------------------------------+--------------------------------
-high frequency troubles | Binary/Hard    | 5ire E3 SUCC; Roo E3 PART     | SOLVED (5ire) - pwntools+rop_chain_builder
-ORDER ORDER             | Web/Hard       | 5ire E3 SUCC; Roo E1 SUCC     | SOLVED (both) - sqli_order_oracle
-UnforgottenBits         | Forensics/Hard | 5ire E3 PART; Roo all PART    | PARTIAL - disk_image_mount mounts it, no verified flag
-Printer Shares 2        | General/Hard   | 5ire E3 PART; Roo all FAIL    | PARTIAL/FAIL - private flag needs write/cron pivot
-Credential Stuffing     | Web/Medium     | 5ire all FAIL; Roo all PART   | PARTIAL - no flag recovered
-noted                   | Web/Hard       | 5ire all FAIL; Roo E3 PART    | PARTIAL/FAIL - multi-step XSS+CSRF chain
-secure-email-service    | Web/Hard       | 5ire all FAIL; Roo E2/E3 PART | PARTIAL/FAIL - S/MIME core unaddressed
-SRA                     | Crypto/Hard    | not re-run                    | OUT OF REACH (§4, reasoning-bound; no tool)
-Secure Dot Product      | Crypto/Hard    | not re-run                    | OUT OF REACH (§4, interactive MPC)
+Exercise                | Cat/Diff       | Re-run (5ire / RooCode / Claude)              | Status (all 3)
+------------------------+----------------+----------------------------------------------+--------------------------------
+high frequency troubles | Binary/Hard    | 5ire E3 SUCC; Roo E3 PART; Cla all FAIL       | SOLVED (5ire) - pwntools+rop_chain_builder
+ORDER ORDER             | Web/Hard       | 5ire E3 SUCC; Roo E1 SUCC; Cla all FAIL       | SOLVED (5ire+RooCode) - sqli_order_oracle
+UnforgottenBits         | Forensics/Hard | 5ire E3 PART; Roo all PART; Cla E2/E3 PART    | PARTIAL - disk_image_mount mounts it, no verified flag
+Printer Shares 2        | General/Hard   | 5ire E3 PART; Roo all FAIL; Cla all SUCC      | SOLVED (Claude) - smb_ipp_exploit
+Credential Stuffing     | Web/Medium     | 5ire all FAIL; Roo all PART; Cla all SUCC     | SOLVED (Claude)
+noted                   | Web/Hard       | 5ire all FAIL; Roo E3 PART; Cla all FAIL      | PARTIAL/FAIL - multi-step XSS+CSRF chain
+secure-email-service    | Web/Hard       | 5ire all FAIL; Roo E2/E3 PART; Cla all FAIL   | PARTIAL/FAIL - S/MIME core unaddressed
+SRA                     | Crypto/Hard    | not re-run by any config                     | UNSOLVED by all - reasoning-bound
+Secure Dot Product      | Crypto/Hard    | not re-run by any config                     | UNSOLVED by all - interactive MPC
 
-- 2 of 9 SOLVED in >=1 config (high frequency troubles, ORDER ORDER); 5 reached PARTIAL but no verified
-  flag (UnforgottenBits, Printer Shares 2, Credential Stuffing, noted, secure-email-service); 2 not
-  re-run / out-of-reach (SRA, Secure Dot Product - no tool was built for either).
-- Partially overturns §8's "capabilities not yet in HexStrike" framing: the new tools cracked the
-  universal-failure wall (2 broken, 5 dented), they did not demolish it - every one still unsolved is
-  either a multi-step pivot (Printer Shares 2 write-pivot; noted / secure-email chains) or pure
-  reasoning (§4 SRA / Secure Dot Product).
-- [Claude/ClaudeCode: PENDING re-run - some of these may yet flip for Claude; fold in when available.]
+- 4 of 9 now SOLVED in >=1 config (high frequency troubles, ORDER ORDER, Printer Shares 2, Credential
+  Stuffing); 3 reached PARTIAL (UnforgottenBits, noted, secure-email-service); 2 unsolved by every
+  config (SRA, Secure Dot Product).
+- Overturns §8's "capabilities not yet in HexStrike" framing more than expected: 4 broken, 3 dented.
+  Claude broke Printer Shares 2 and Credential Stuffing -- universal failures the weak configs could
+  not crack, which confirms the limit there was config reasoning, not a missing capability. The 2 still
+  unsolved by everyone (SRA, Secure Dot Product) are the only genuine hard-reasoning cases.
 
 11.7 Exp 2 comparability -- RESOLVED: comparable
 ------------------------------------------------
@@ -518,19 +524,19 @@ Exp 2 prompt exists in the repo. (Same generator => Claude's Exp 2 is comparable
 11.8 New-tool invocation check (usage, NOT a "failure rate")
 ------------------------------------------------------------
 All 7 §3 tools were actually invoked in their intended target exercise(s) -- 100% target coverage; the
-per-category prompt nudges worked. Counts across the 5ire + RooCode re-runs (Claude PENDING):
+per-category prompt nudges worked. Counts across all three configs' re-runs:
 
 Tool               | Target                 | Calls/Blocks | In SUCC blk | Note
 -------------------+------------------------+--------------+-------------+--------------------------------
-rsa_factor         | Very Smooth            |   1 / 1      |     1       | canonical n/e/c - clean solve
-compression_oracle | Compress and Attack    |   8 / 5      |     2       | solves used mode=tcp/host/port; 5ire target=/secret_prefix= did not
+rsa_factor         | Very Smooth, ClusterRSA|   2 / 2      |     2       | canonical n/e/c; both solved (5ire, Claude)
+compression_oracle | Compress and Attack    |  10 / 7      |     4       | solves used mode=tcp/host/port (RooCode, Claude)
 timing_oracle      | SideChannel            |  14 / 5      |     0       | invoked correctly incl. metric=instructions; 0 solves = signal-bound, not a call failure
-smb_ipp_exploit    | Printer Shares 2 & 3   |  26 / 10     |     3       | well-formed; PS3 solved (RooCode), PS2 stuck all 5 blocks
+smb_ipp_exploit    | Printer Shares 2 & 3   |  30 / 14     |     7       | PS3 solved (RooCode); PS2 solved by Claude 3/3, stuck for 5ire/RooCode
 sqli_order_oracle  | ORDER ORDER            |  10 / 3      |     2       | solves set a real true_marker; empty true_marker -> PARTIAL
 evtx_parser        | Event-Viewing          |  17 / 4      |     3       | solved; logged param names differ by client (see below)
 blockchain_exploit | Access/Overflow/Reentr.|  10 / 4      |     2       | call/send well-formed; Reentrance only PARTIAL
 -------------------+------------------------+--------------+-------------+--------------------------------
-TOTAL                                       |  86 / 32     |    13       |
+TOTAL                                       |  93 / 39     |    20       |
 
 - Usage is the story, not pass/fail: timing_oracle was called 14x correctly and still solved nothing
   (signal-bound, per 11.5b) -- that is NOT an invocation failure and must not be read as a "failure rate".
@@ -539,5 +545,7 @@ TOTAL                                       |  86 / 32     |    13       |
 - Parity/hygiene flags (non-blocking): (a) logged param names differ between clients (5ire file/grep/full
   vs RooCode evtx_file/output_format; timing target vs url; blockchain rpc vs rpc_url) -- partly per-client
   logging format, but worth confirming MCP-wrapper <-> endpoint param parity; (b) one RooCode evtx call read
-  the .evtx from results/Claude/ClaudeCode/ instead of its own dir -- path-hygiene slip, verdict unaffected.
-- [Claude/ClaudeCode: PENDING re-run - add Claude's invocation counts when available.]
+  the .evtx from results/Claude/Sonnet4.6/ instead of its own dir -- path-hygiene slip, verdict unaffected.
+- Claude invoked only 3 of the 7 §3 tools (rsa_factor, compression_oracle, smb_ipp_exploit); its
+  bucket A didn't include the others' targets (e.g. it had already solved Event-Viewing in the
+  baseline). All 7 of Claude's §3 calls landed in SUCCESSFUL blocks.

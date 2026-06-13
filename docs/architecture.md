@@ -209,7 +209,7 @@ New (hexfix §3 — built and VM-verified this round): `evtx_parser`, `rsa_facto
   - Exp 1: Free solve (any tools)
   - Exp 2: HexStrike tools only, ranked
   - Exp 3: HexStrike tools only, strict adherence
-- **Configs reported (in results_analysis):** Claude+ClaudeCode, DeepSeek+5ire, DeepSeek+RooCode — 3 configs (Trae is a supported client but produced no reported results)
+- **Configs reported (in results_analysis):** Claude+Sonnet4.6, DeepSeek+5ire, DeepSeek+RooCode — 3 configs (Trae is a supported client but produced no reported results)
 - **Results stored in:** `results/` directory (do NOT write to these files)
 - **Prompt generation:** `prompt_generator.py` — a standalone GUI (no server/import needed) that
   builds each run's Prompt 2 (STEP 1 setup + STEP 2 task with the strategy preamble + per-category
