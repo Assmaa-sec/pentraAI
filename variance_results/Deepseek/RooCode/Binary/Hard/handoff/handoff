@@ -1,0 +1,10 @@
+Both the binary here and the source are attached to the prompt.
+Connect to the program with netcat:
+$ nc shape-facility.picoctf.net [PORT]
+
+Results:
+[Experiment 1]
+
+[Experiment 2]
+
+[Experiment 3]

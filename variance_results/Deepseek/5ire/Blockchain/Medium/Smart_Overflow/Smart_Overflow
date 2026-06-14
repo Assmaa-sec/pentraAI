@@ -1,0 +1,14 @@
+Welcome! The contract tracks balances using uint256 math. It should be impossible to get the flag...
+Contract is attached to the prompt.
+The eth chain is at:
+Eth node address: mysterious-sea.picoctf.net:[PORT1]
+
+More details can be found at http://mysterious-sea.picoctf.net:[PORT2]/
+NOTE: this server can take up to 5 minutes to start up. Please be patient.
+
+Results:
+[Experiment 1]
+
+[Experiment 2]
+
+[Experiment 3]
