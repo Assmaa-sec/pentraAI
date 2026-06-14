@@ -16,4 +16,4 @@ kubectl
 .claude/*
 prompts/
 paper_todo.md
-report.md
+report*
