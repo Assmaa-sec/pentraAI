@@ -398,6 +398,25 @@ Hard       |  4 / 51 |  8 / 39 | 11 / 29
 - Easy + Medium = 105 of 128 flips (82.0%); gains stay concentrated below Hard.
 - Hard recovery scales with config strength: 5ire 4/51 (7.8%), RooCode 8/39 (20.5%), Claude 11/29
   (37.9%). Claude flips two Hard challenges with NO tool (tic-tac, Bithug) -- reasoning, not tooling.
+
+11.3b Solve rate by difficulty (ALL experiments, pre- vs post-fix)
+-----------------------------------------------------------------
+Distinct from 11.3 above: the plain SUCCESS rate over ALL experiments in each difficulty (denominator =
+every experiment, not just the re-run failures). 27 Easy / 31 Medium / 28 Hard challenges x 3 variants
+x 3 configs = 774.
+
+Difficulty | 1st-run S | flips | post S | total exp | pre-fix | post-fix | delta
+-----------+-----------+-------+--------+-----------+---------+----------+--------
+Easy       |    184    |   45  |   229  |    243    |  75.7%  |  94.2%   | +18.5pp
+Medium     |    168    |   60  |   228  |    279    |  60.2%  |  81.7%   | +21.5pp
+Hard       |     77    |   23  |   100  |    252    |  30.6%  |  39.7%   |  +9.1pp
+Total      |    429    |  128  |   557  |    774    |  55.4%  |  72.0%   | +16.6pp
+
+- Monotonic before AND after. The fixes help the MIDDLE most (Medium +21.5pp) and move Hard least
+  (+9.1pp) -- consistent with Hard failures being reasoning-/environment-bound (see 11.6 + the taxonomy),
+  not tool-bound. (delta = flips / total experiments.)
+- Do NOT confuse with 11.3's RECOVERY rates (Easy 76.3 / Med 54.1 / Hard 19.3), which count only
+  previously-failed trials that flipped; the column above is the solve rate over all experiments.
   
 11.4 Per-experiment (Exp 1 / 2 / 3) delta
 -----------------------------------------
@@ -549,3 +568,82 @@ TOTAL                                       |  93 / 39     |    20       |
 - Claude invoked only 3 of the 7 §3 tools (rsa_factor, compression_oracle, smb_ipp_exploit); its
   bucket A didn't include the others' targets (e.g. it had already solved Event-Viewing in the
   baseline). All 7 of Claude's §3 calls landed in SUCCESSFUL blocks.
+
+12. Inferential statistics (computed on the data above; no new runs)
+====================================================================
+Method: Wilson score 95% CIs for each rate; McNemar's paired test for before->after (per config);
+two-proportion z-test for the client comparison. Python stdlib only; every input traces to 11.1
+(n, baseline S, post-fix S, flips). These attach uncertainty + significance to the headline numbers
+for the paper. (Fine-grained heatmap cells of ~6 trials stay descriptive -- no test is hung on one.)
+
+12.1 Success rates with 95% confidence intervals (Wilson)
+---------------------------------------------------------
+Config              | Baseline S/n  | 95% CI       | Post-fix S/n  | 95% CI
+--------------------+---------------+--------------+---------------+--------------
+Claude / Sonnet4.6  | 203/258 78.7% | [73.3, 83.2] | 232/258 89.9% | [85.6, 93.0]
+Deepseek / RooCode  | 154/258 59.7% | [53.6, 65.5] | 197/258 76.4% | [70.8, 81.1]
+Deepseek / 5ire     |  72/258 27.9% | [22.8, 33.7] | 128/258 49.6% | [43.6, 55.7]
+Combined            | 429/774 55.4% | [51.9, 58.9] | 557/774 72.0% | [68.7, 75.0]
+
+- Baseline and post-fix CIs do NOT overlap for any config -> the gain is not a CI artefact.
+- 5ire's post-fix CI [43.6, 55.7] sits entirely below RooCode's [70.8, 81.1]: the client gap
+  survives the fixes (quantified in 12.3).
+
+12.2 Before -> after significance (McNemar, paired, n=258 cells per config)
+--------------------------------------------------------------------------
+Pairs each (challenge x experiment) cell, baseline vs post-fix. Because only previously-FAILED trials
+were re-run, the discordant pairs are one-directional BY DESIGN: b (pass->fail) = 0, c (fail->pass) =
+flips. McNemar here confirms the improvement is not chance; it does NOT test for regressions among
+previously-passing trials (those were not re-run -- the re-run-only caveat that runs through section 11).
+Effect = paired gain in the success rate.
+
+Config              | c (flips) | chi2 (cc) | p (cc)   | gain (pp) 95% CI
+--------------------+-----------+-----------+----------+--------------------
+Claude / Sonnet4.6  |    29     |   27.0    | 2.0e-07  | +11.2 [ 7.4, 15.1]
+Deepseek / RooCode  |    43     |   41.0    | 1.5e-10  | +16.7 [12.1, 21.2]
+Deepseek / 5ire     |    56     |   54.0    | 2.0e-13  | +21.7 [16.7, 26.7]
+(exact binomial McNemar p is even smaller: 3.7e-09 / 2.3e-13 / 2.8e-17 -- report either; all p << 0.001)
+
+12.3 Client effect -- statistical backing for the down-scoped client claim
+--------------------------------------------------------------------------
+Same model (DeepSeek), different client (RooCode vs 5ire), two-proportion z-test:
+  Baseline: 154/258 vs  72/258 -> z = 7.28, p = 3.4e-13, diff +31.8pp [23.7, 39.9], ratio 2.14x
+  Post-fix: 197/258 vs 128/258 -> z = 6.29, p = 3.2e-10, diff +26.7pp [18.7, 34.8], ratio 1.54x
+
+- SUPPORTED RESULT: for DeepSeek, the client alone accounts for a 2.14x baseline success gap (highly
+  significant). The fixes shrink it (2.14x -> 1.54x) but do not close it -- they help the weaker client
+  more, yet a large client effect remains. This is the claim to make (matches the summary at the top).
+- HYPOTHESIS ONLY (do NOT state as a result): "the client matters as much as the model." The client
+  effect is measured for ONE model (DeepSeek ran on two clients; Claude ran on a single client), so its
+  magnitude cannot be generalised across models. Present the general version as future work, not a finding.
+
+13. Run-to-run stability (variance sub-study)
+=============================================
+Goal: characterise run-to-run verdict variance so the single-run cells in the 774-run study are
+defensible WITHOUT replicating all 774. Protocol: 10 challenges (all 7 categories, Easy->Hard, with a
+pass anchor Smart_Overflow and a fail anchor Printer Shares 2), each re-run 3x, on DeepSeek/RooCode AND
+DeepSeek/5ire, Experiment 1 (free solve), post-fix, at the SAME default sampling as the main study (NOT
+pinned -- pinning would suppress the variance being measured). Claude excluded (near-ceiling, trivially
+stable). 10 x 3 x 2 = 60 runs.
+
+Agreement = identical verdict across all 3 runs of a challenge:
+Config   | Unanimous | Split | Notes
+---------+-----------+-------+----------------------------------------------------------
+RooCode  |   10/10   |   0   | zero variance -- every challenge gave the same verdict 3x
+5ire     |    7/10   |   3   | 3 splits, all 2-1 (majority decisive), all borderline Mediums
+COMBINED |   17/20   |   3   | 85% of cells unanimous; NO cell was ever 1-1-1
+
+- 5ire's 3 unstable cells: Event-Viewing F/S/F, Bypass Me S/F/F, No FA F/S/F -- all Medium, all 2-1 with
+  a FAILED majority and a single optimistic SUCCESS. RooCode solved these same three 3/3.
+- Stability scales with config strength: the stronger client (RooCode) is perfectly reproducible; the
+  weaker (5ire) wobbles ONLY where its own success probability sits near ~50% -- borderline Mediums that
+  are solvable (RooCode lands them every time) but that 5ire only manages intermittently. Easy and Hard
+  are perfectly stable for both clients; both anchors held.
+- Implication for the single-run 774 study: single-run verdicts are trustworthy. A single run matches the
+  3-run majority in 17/20 cells outright; in the 3 split cells the majority is still 2-1, so a single run
+  has a 2/3 chance of matching it even there. The only run-to-run risk is a borderline-Medium cell on the
+  weakest config -- bounded, never a 3-way split, never seen on Easy/Hard or on the stronger client.
+- Scope: this sub-study measures STABILITY (do repeated runs agree), not whether a verdict was a success
+  or matched any prior expectation. It is Experiment-1-only and post-fix (not a before/after). Non-success
+  verdicts reproduced as cleanly as successes -- e.g. handoff and Compress and Attack were a stable PARTIAL
+  on all 3 runs.
